@@ -1,0 +1,36 @@
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = TO_BE
+
+  contains RegistroInquilinos
+  contains ActualizacionInquilinos
+  contains ConsultaInquilinos
+	
+  RegistroInquilinos [SK]<->[SK] ActualizacionInquilinos
+  ActualizacionInquilinos [SK]<->[SK] ConsultaInquilinos
+  ConsultaInquilinos [SK]<->[SK] RegistroInquilinos
+}
+
+BoundedContext RegistroInquilinos
+BoundedContext ActualizacionInquilinos
+BoundedContext ConsultaInquilinos
+
+UserStory CrearInquilino {
+  As an "AgenteHumano"
+    I want to "crear" a "Inquilino" with its "nombre", "direccion", "contactos"
+  so that "Pueda dar información de un nuevo Inquilino en una Propiedad en seguimiento desde PDA."
+}
+
+UserStory ActualizarInquilino {
+  As an "AgenteHumano"
+    I want to "actualizar" a "Inquilino" with its "nombre", "direccion", "contactos"
+  so that "Pueda dar información al día sobre un Inquilino de una Propiedad en seguimiento desde PDA."
+}
+
+UserStory ConsultarInquilino {
+  As an "AgenteHumano"
+    I want to "consultar" a "Inquilino" with its "nombre", "direccion", "contactos"
+  so that "Pueda ver los detalles relevantes de un Inquilino en una Propiedad seguida por PDA."
+}
+
+

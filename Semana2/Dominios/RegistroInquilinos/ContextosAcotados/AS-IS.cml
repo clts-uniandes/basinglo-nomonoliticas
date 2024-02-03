@@ -1,0 +1,15 @@
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = AS_IS
+
+  contains InformacionDeInquilinos
+}
+
+BoundedContext InformacionDeInquilinos {
+  type SYSTEM
+  domainVisionStatement "Abstrae el modelo en aplicación monolito que debe estar usando PDA en este momento para gestionar
+  la información recolectada de Inquilinos en propiedades bajo el seguimiento de PDA. Ya que el sistema ya existe (por lo
+  visto), se considera tipo SYSTEM. Se asume que en términos de DDD, solo habrá un contexto acotado para trabajar dicho
+  subdominio núcleo."
+  
+}
