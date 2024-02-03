@@ -13,3 +13,8 @@ BoundedContext InformacionDeInquilinos {
   subdominio núcleo."
   
 }
+
+/*
+  Debido a que dentro del dominio de inquilinos, no se detecta una delimitación clara de contextos, el diagrama resultante
+  es un diagrama de Venn solitario
+*/
