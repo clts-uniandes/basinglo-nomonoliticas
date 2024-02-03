@@ -1,0 +1,11 @@
+Domain DominioPDA {
+    Subdomain ComparativosVentas {
+        type CORE_DOMAIN
+
+        domainVisionStatement "Con este modelo de dominio se busca proporcionar información sobre las transacciones de ventas históricas y 
+        análisis comparativos de ventas de propiedades en diferentes mercados."
+
+        Entity TransaccionVenta 
+    }
+
+}

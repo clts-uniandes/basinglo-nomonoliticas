@@ -1,0 +1,13 @@
+Domain DominioPDA {
+  Subdomain CaracteristicasPropiedades {
+    type CORE_DOMAIN
+
+    domainVisionStatement "Con este modelo de dominio se busca capturar y gestionar de manera integral todas las
+    características físicas y atributos relevantes de las propiedades comerciales. Esto incluye información detallada sobre la estructura, 
+    ubicación, dimensiones, zonificación y otros aspectos clave que faciliten a los usuarios de Propiedades de los Alpes (PDA) tomar 
+    decisiones informadas sobre alquileres, ventas y transacciones inmobiliarias."
+
+    Entity Propiedad
+  }
+
+}

@@ -1,0 +1,18 @@
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = AS_IS
+
+  contains ComparativosDeVentas
+}
+
+BoundedContext ComparativosDeVentas {
+  type SYSTEM
+  domainVisionStatement "Abstrae el modelo actual en una aplicación monolítica que proporciona información sobre las transacciones de ventas 
+  históricas y análisis comparativos de ventas de propiedades en diferentes mercados."
+  responsibilities = "TransacionesVentas", "creacionTransacionesVentas", "consultaTransacionesVentas", "actualizacionTransacionesVentas"
+}
+
+/*
+  Debido a que dentro del dominio de inquilinos, no se detecta una delimitación clara de contextos, el diagrama resultante
+  es un diagrama de Venn solitario
+*/

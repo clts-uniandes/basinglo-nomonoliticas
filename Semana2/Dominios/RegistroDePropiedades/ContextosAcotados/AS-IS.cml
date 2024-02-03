@@ -1,0 +1,19 @@
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = AS_IS
+
+  contains CaracteristicasDePropiedades
+}
+
+BoundedContext CaracteristicasDePropiedades {
+  type SYSTEM
+  domainVisionStatement "Este contexto encapsula todas las funcionalidades relacionadas con la gestión de información sobre las 
+  características físicas de las propiedades comerciales en el sistema de Propiedades de los Alpes (PDA). Se encarga de capturar, almacenar, 
+  y proporcionar acceso a los datos detallados sobre la estructura, dimensiones, ubicación y otros atributos relevantes de las propiedades."
+  responsibilities = "Propiedades", "creacionPropiedades", "consultaPropiedades", "actualizacionPropiedades"
+}
+
+/*
+  Dado que no se detecta una delimitación clara de contextos dentro del dominio de Características de Propiedades, 
+  el diagrama resultante es un diagrama de Venn solitario.
+*/

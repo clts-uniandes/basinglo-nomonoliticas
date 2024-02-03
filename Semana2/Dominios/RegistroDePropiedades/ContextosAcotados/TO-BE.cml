@@ -1,0 +1,67 @@
+Domain DominioPDA {
+  Subdomain CaracteristicasPropiedades
+  /* Ver SubdominioCaracteristicasPropiedades.cml*/
+}
+
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = TO_BE
+
+  contains RegistroPropiedades, ActualizacionPropiedades, ConsultaPropiedades
+  contains GestionPropiedades
+
+  /* Usan kernel compartido ya que se espera deban compartir la misma informacion*/
+  RegistroPropiedades [SK]<->[SK] ActualizacionPropiedades
+  ActualizacionPropiedades [SK]<->[SK] ConsultaPropiedades
+  ConsultaPropiedades [SK]<->[SK] RegistroPropiedades
+
+  /* Se busca con GestionPropiedades gestionar la colaboración con los otros subdominios de negocio, pero quien se centra
+     en habilitar la funcionalidad en tiempo real son los contextos acotados que se mencionaron previamente. Falta
+     decidir si el upstream maneja un PL para reducir la carga de manejar un ACL, o si toda la carga recae en
+     GestionPropiedades y su ACL. No puede ser meramente CL el downstream porque tendría un costo mayor en caso de
+     que los upstream requieran cambios radicales*/
+  RegistroPropiedades [U,PL]->[D,ACL] GestionPropiedades : CreacionCaracteristicasPropiedades
+  ActualizacionPropiedades [U,PL]->[D,ACL] GestionPropiedades : ActualizacionPropiedadesRegistradas
+  ConsultaPropiedades [U,PL]->[D,ACL] GestionPropiedades : ConsultaPropiedadesRegistradas
+}
+
+BoundedContext RegistroPropiedades {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para atender el registro de nuevas características de propiedades."
+  responsibilities = "Propiedades", "creacionCaracteristicasPropiedades"
+}
+BoundedContext ActualizacionPropiedades {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para manejar actualizaciones de información de características de propiedades existentes."
+  responsibilities = "Propiedades", "ActualizacionPropiedades"
+}
+BoundedContext ConsultaPropiedades {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para ofrecer capacidades de consulta de información de características de propiedades."
+  responsibilities = "Propiedades", "ConsultaPropiedades"
+}
+BoundedContext GestionPropiedades implements CaracteristicasPropiedades {
+  type FEATURE
+  domainVisionStatement "Contexto dedicado para manejo de información de características de propiedades, para los colaboradores que lo requieran."
+}
+
+UserStory CrearPropiedades {
+  As an "AgenteHumano"
+    I want to "crear" a "Propiedad" with its "tamaño", "tipo de construcción", "zonificación", "tamaño del lote", "numero de pisos", 
+    "estacionamiento", "fotograficas", "ubicación"
+  so that "Pueda dar información de una nueva Propiedad en seguimiento desde PDA."
+}
+
+UserStory ActualizarPropiedades {
+  As an "AgenteHumano"
+    I want to "actualizar" a "Propiedad" with its "tamaño", "tipo de construcción", "zonificación", "tamaño del lote", "numero de pisos", 
+    "estacionamiento", "fotograficas", "ubicación"
+  so that "Pueda mantener actualizada la información sobre una  propiedad en seguimiento desde PDA."
+}
+
+UserStory ConsultarPropiedades {
+  As an "AgenteHumano"
+    I want to "consultar" a "Propiedad" with its "tamaño", "tipo de construcción", "zonificación", "tamaño del lote", "numero de pisos", 
+    "estacionamiento", "fotograficas", "ubicación"
+  so that "Pueda ver los detalles relevantes de una propiedad seguida por PDA."
+}

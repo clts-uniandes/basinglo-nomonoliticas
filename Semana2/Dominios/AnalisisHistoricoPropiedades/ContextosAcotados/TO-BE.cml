@@ -1,0 +1,67 @@
+Domain DominioPDA {
+  Subdomain ComparativosVentas
+  /* Ver SubdominioComparativosVentas.cml */
+}
+
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = TO_BE
+
+  contains RegistroTransaccionesVentas, ActualizacionTransaccionesVentas, ConsultaTransaccionesVentas
+  contains GestionComparativosVentas
+
+  /* Usan kernel compartido ya que se espera deban compartir la misma información */
+  RegistroTransaccionesVentas [SK]<->[SK] ActualizacionTransaccionesVentas
+  ActualizacionTransaccionesVentas [SK]<->[SK] ConsultaTransaccionesVentas
+  ConsultaTransaccionesVentas [SK]<->[SK] RegistroTransaccionesVentas
+
+  /* Se busca con GestionComparativosVentas gestionar la colaboración con los otros subdominios de negocio, pero quien se centra
+     en habilitar la funcionalidad en tiempo real son los contextos acotados que se mencionaron previamente. Falta
+     decidir si el upstream maneja un PL para reducir la carga de manejar un ACL, o si toda la carga recae en
+     GestionComparativosVentas y su ACL. No puede ser meramente CL el downstream porque tendría un costo mayor en caso de
+     que los upstream requieran cambios radicales */
+  RegistroTransaccionesVentas [U,PL]->[D,ACL] GestionComparativosVentas : CreacionTransaccionesVentas
+  ActualizacionTransaccionesVentas [U,PL]->[D,ACL] GestionComparativosVentas : ActualizacionTransaccionesVentasRegistradas
+  ConsultaTransaccionesVentas [U,PL]->[D,ACL] GestionComparativosVentas : ConsultaTransaccionesVentasRegistradas
+}
+
+BoundedContext RegistroTransaccionesVentas {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para atender el registro de nuevas transacciones de ventas."
+  responsibilities = "TransaccionesVentas", "CreacionTransaccionesVentas"
+}
+
+BoundedContext ActualizacionTransaccionesVentas {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para manejar actualizaciones de información de transacciones de ventas existentes."
+  responsibilities = "TransaccionesVentas", "ActualizacionTransaccionesVentas"
+}
+
+BoundedContext ConsultaTransaccionesVentas {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para ofrecer capacidades de consulta de información de transacciones de ventas."
+  responsibilities = "TransaccionesVentas", "ConsultaTransaccionesVentas"
+}
+
+BoundedContext GestionComparativosVentas implements ComparativosVentas {
+  type FEATURE
+  domainVisionStatement "Contexto dedicado para el manejo de información de comparativos de ventas, para los colaboradores que lo requieran."
+}
+
+UserStory CrearTransaccionesVentas {
+  As an "AgenteHumano"
+    I want to "crear" a "Transacción de Venta" with its "comprador", "vendedor", "materiales del mercado", "noticias de los medios"
+  so that "Pueda registrar una nueva transacción de venta en el sistema."
+}
+
+UserStory ActualizarTransaccionesVentas {
+  As an "AgenteHumano"
+    I want to "actualizar" a "Transacción de Venta" with its  "comprador", "vendedor", "materiales del mercado", "noticias de los medios"
+  so that "Pueda mantener actualizada la información sobre una transacción de venta existente en el sistema."
+}
+
+UserStory ConsultarTransaccionesVentas {
+  As an "AgenteHumano"
+    I want to "consultar" a "Transacción de Venta" with its  "comprador", "vendedor", "materiales del mercado", "noticias de los medios"
+  so that "Pueda ver los detalles relevantes de una transacción de venta registrada en el sistema."
+}
