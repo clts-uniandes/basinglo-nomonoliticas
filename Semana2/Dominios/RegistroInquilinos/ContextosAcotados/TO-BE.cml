@@ -1,19 +1,51 @@
+Domain DominioPDA {
+  Subdomain InformacionInquilinos
+  /* Ver SubdominioInformacionInquilinos.cml*/
+  
+}
+
 ContextMap {
   type = SYSTEM_LANDSCAPE
   state = TO_BE
 
-  contains RegistroInquilinos
-  contains ActualizacionInquilinos
-  contains ConsultaInquilinos
-	
+  contains RegistroInquilinos, ActualizacionInquilinos, ConsultaInquilinos
+  contains GestionInquilinos
+
+	/* Usan kernel compartido ya que se espera deban compartir la misma informacion*/
   RegistroInquilinos [SK]<->[SK] ActualizacionInquilinos
   ActualizacionInquilinos [SK]<->[SK] ConsultaInquilinos
   ConsultaInquilinos [SK]<->[SK] RegistroInquilinos
+
+  /* Se busca con GestionInquilinos gestionar la colaboración con los otros subdominios de negocio, pero quien se centra
+     en habilitar la funcionalidad en tiempo real son los contextos acotados que se mencionaron previamente. Falta
+     decidir si el upstream maneja un PL para reducir la carga de manejar un ACL, o si toda la carga recae en
+     GestionInquilinos y su ACL. No puede ser meramente CL el downstream porque tendría un costo mayor en caso de
+     que los upstream requieran cambios radicales*/
+  RegistroInquilinos [U,PL]->[D,ACL] GestionInquilinos : CreacionInquilinos
+  ActualizacionInquilinos [U,PL]->[D,ACL] GestionInquilinos : ActualizacionInquilinosRegistrados
+  ConsultaInquilinos [U,PL]->[D,ACL] GestionInquilinos : ConsultaInquilinosRegistrados
 }
 
-BoundedContext RegistroInquilinos
-BoundedContext ActualizacionInquilinos
-BoundedContext ConsultaInquilinos
+BoundedContext RegistroInquilinos {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para atender el registro de nuevos inquilinos a seguir"
+  responsibilities = "Inquilinos", "creacionInquilinos"
+}
+BoundedContext ActualizacionInquilinos {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para manejar actualizaciones de información que se requiera de inquilinos ya seguidos"
+  responsibilities = "Inquilinos", "actualizacionInquilinos"
+}
+BoundedContext ConsultaInquilinos {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para ofrecer capacidades de consulta de información de inquilinos"
+  responsibilities = "Inquilinos", "consultaInquilinos"
+}
+BoundedContext GestionInquilinos implements InformacionInquilinos {
+  type FEATURE
+  domainVisionStatement "Contexto dedicado para manejo de información de inquilinos, para los colaboradores que lo requieran (por
+  ejemplo, en contextos asociados a Transacciones de Propiedades)"
+}
 
 UserStory CrearInquilino {
   As an "AgenteHumano"
