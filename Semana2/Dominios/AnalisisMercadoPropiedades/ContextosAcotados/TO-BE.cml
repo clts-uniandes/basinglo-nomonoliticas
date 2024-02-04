@@ -45,3 +45,15 @@ BoundedContext TendenciasHistoricasComerciales refines AnalisisMercadoPropiedade
   en la oferta de PDA, pero permitiendo evolucionar su stack tecnológico para no solo enfrentar los nuevos retos que va a tener PDA
   a nivel global, sino para también retener este servicio ofrecido a usuarios finales.
 */
+
+UserStory ParticipacionMercadoAgencias {
+  As an "AgenteHumano"
+    I want to "visualizar" a "Agencias" with its "nombres"
+  so that "Pueda dar información de su participación en el Mercado y cuales aportan mayor valor a las propiedades administradas por PDA."
+}
+
+UserStory TendenciasHistoricasComerciales {
+  As an "AgenteHumano"
+    I want to "consultar" a "Propiedad" with its "ventaPromedio", "duracionPromedioAcuerdo", "tasasDesocupacion"
+  so that "Pueda tener el historico con el fin de aplicar algoritmos de Machine Learning y predecir valor futuros como promesade valor de PDA."
+}
