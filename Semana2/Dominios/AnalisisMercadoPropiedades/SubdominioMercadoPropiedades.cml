@@ -1,0 +1,21 @@
+Domain DominioPDA {
+  Subdomain AnalisisMercadoPropiedades {
+    type CORE_DOMAIN
+
+    domainVisionStatement "Con este modelo de dominio se busca permitir a los usuarios desglosar de propiedad principal,
+    la participación de mercado de las agencias, las tendencias históricas de arrendamiento y venta, y más en un área
+    geográfica específica o dentro de un conjunto de propiedades competitivas. Los usuario pueden comparar las tarifas
+    de venta promedio de una propiedad en cuestión, la duración promedio de los acuerdos, las tasas de desocupación y
+    más con edificios dentro de la misma área. ADICIONALMENTE, se espera poder ofertar otros tipos de analisis a futuro,
+    en particular todos aquellos que sean demandados en nuevos mercados donde desee entrar Propiedades de los Alpes."
+
+    Entity InformacionDeMercadoPropiedad {
+      String participacionesMercadoDeAgencias
+      String historiaArrendamientos
+      String tarifaPromedioVenta
+      String duracionPromedioAcuerdo
+      String tasaDesocupacion
+    }
+  }
+  
+}

@@ -1,0 +1,23 @@
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = AS_IS
+
+  contains AnalisisMercadoPropiedades
+  
+}
+
+BoundedContext AnalisisMercadoPropiedades {
+  type SYSTEM
+  domainVisionStatement "Abstrae el modelo en aplicación monolito que debe estar usando PDA en este momento para gestionar
+  toda la información al día del mercado de propiedades, como mínimo para las propiedades analizadas en Colombia. Ya que el
+  sistema ya existe (por lo visto), se considera tipo SYSTEM. Se asume que en términos de DDD, solo habrá un contexto
+  acotado para trabajar dicho subdominio núcleo."
+  responsibilities = "ParticipacionMercadoAgencias", "TendenciasHistoricasComerciales", "definirConjuntoPropiedadesAnalisis",
+  "definirAreaGeograficaAnalisis", "compararTarifasVentaPropiedad", "consultarDuracionAcuerdo", "consultarTasaDesocupacion"
+}
+
+/*
+  El enunciado menciona los servicios prestados por PDA y el flujo general para la adquisición y enriquecimiento de datos en
+  PDA, más no hace distinción explícita de contextos acotados en cada servicio, o subdominio de negocio, por lo que se asume
+  no debe haber más de un contexto acotado, a lo mucho.
+*/

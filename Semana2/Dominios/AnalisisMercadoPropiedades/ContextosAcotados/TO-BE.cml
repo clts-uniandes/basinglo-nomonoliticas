@@ -1,0 +1,47 @@
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = TO_BE
+
+  contains ParticipacionMercadoAgencias
+  contains TendenciasHistoricasComerciales
+  contains AnalisisMercadoPropiedades
+
+  /* 
+  Ya que se quiere retener las funcionalidades de análisis de mercado actuales, se considera necesario usar Open
+  Host Ssytem. Para dar soporte estable a dichas funcionalidades, aun con la redefinicion de contextos descrita 
+  en este TO BE. Debido a esto, el empleo de AntiCorruptionLayer se considera Recomendado más no requerido*/
+  ParticipacionMercadoAgencias [U,OHS]->[D,ACL] AnalisisMercadoPropiedades : AnalisisParticipacionMercadoAgencias
+  TendenciasHistoricasComerciales [U,OHS]->[D,ACL] AnalisisMercadoPropiedades : AnalisisTendenciasHistoricasComerciales
+}
+
+BoundedContext AnalisisMercadoPropiedades {
+  type FEATURE
+  domainVisionStatement "Se desea redefinir este contexto para que permita aun ejecutarse los análisis de mercado de propiedades
+  que oferta actualmente a sus clientes, pero que a la vez permita evolucionar al sistema para que PDA como organización pueda
+  enfrentar los nuevos retos que implica llegar al mercado global de comercio de información de propiedades, tanto a nivel de
+  nuevos features para el mercado objetivo como para ajustar la solución de software en lo que requiera a nivel técnico de una
+  forma más flexible. Cambia a tipo FEATURE debido a que puede implicar grandes cambios en el contexto sinónimo actual, o incluso
+  definir un nuevo contexto desde 0."
+  responsibilities = "ParticipacionMercadoAgencias", "TendenciasHistoricasComerciales"
+}
+
+BoundedContext ParticipacionMercadoAgencias refines AnalisisMercadoPropiedades {
+  type FEATURE
+  domainVisionStatement "Abstrae las partes responsables de apoyar el análisis de participación de mercado de las agencias de
+  bienes raíz que maneja PDA."
+  responsibilities = "obtenerParticipacionMercadoAgencias", "definirConjuntoPropiedadesAnalisis", "definirAreaGeograficaAnalisis"
+}
+
+BoundedContext TendenciasHistoricasComerciales refines AnalisisMercadoPropiedades {
+  type FEATURE
+  domainVisionStatement "Abstrae las partes responsables de apoyar el análisis de tendencias históricas de compra y alquiler de
+  propiedades que maneja PDA."
+  responsibilities = "analizarTendenciasHistoricasComerciales", "definirConjuntoPropiedadesAnalisis", "definirAreaGeograficaAnalisis",
+  "compararTarifasVentaPropiedad", "consultarDuracionAcuerdo", "consultarTasaDesocupacion"
+}
+
+/*
+  Ya que el análisis de mercado de propiedades es un servicio que ofrece PDA, se quiere aislar funcionalmente su participación
+  en la oferta de PDA, pero permitiendo evolucionar su stack tecnológico para no solo enfrentar los nuevos retos que va a tener PDA
+  a nivel global, sino para también retener este servicio ofrecido a usuarios finales.
+*/
