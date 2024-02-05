@@ -1,0 +1,20 @@
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = AS_IS
+
+  contains Transacciones
+}
+
+BoundedContext Transacciones {
+  type SYSTEM
+  domainVisionStatement "Abstrae el modelo en aplicación monolito que debe estar usando PDA en este momento para gestionar
+  la información recolectada de las transacciones registradas con los arrendamientos adquiridos y registrados por PDA. Ya que el sistema ya existe (por lo
+  visto), se considera tipo SYSTEM. Se asume que en términos de DDD, solo habrá un contexto acotado para trabajar dicho
+  subdominio núcleo."
+  responsibilities = "Arrendamientos", "registroArrendamiento", "consultaArrendamiento", "actualizacionArrendamiento","monitoreoArrendamientos"
+}
+
+/*
+  Debido a que dentro del dominio de transacciones, no se detecta una delimitación clara de contextos, el diagrama resultante
+  es un diagrama de Venn solitario
+*/

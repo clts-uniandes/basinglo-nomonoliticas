@@ -1,0 +1,83 @@
+Domain DominioPDA {
+  Subdomain InformacionTransacciones
+  /* Ver SubdominioInformacionTransacciones.cml*/
+  
+}
+
+ContextMap {
+  type = SYSTEM_LANDSCAPE
+  state = TO_BE
+
+  contains RegistroArrendamiento, ConsultaArrendamiento, ActualizacionArrendamiento, MonitoreoArrendamientos 
+  contains GestionTransacciones
+
+	/* Usan kernel compartido ya que se espera deban compartir la misma informacion*/
+  RegistroArrendamiento [SK]<->[SK] ActualizacionArrendamiento
+  ActualizacionArrendamiento [SK]<->[SK] ConsultaArrendamiento
+  ConsultaArrendamiento [SK]<->[SK] RegistroArrendamiento
+  MonitoreoArrendamientos  [SK]<->[SK] RegistroArrendamiento
+  ActualizacionArrendamiento [SK]<->[SK] MonitoreoArrendamientos
+  ConsultaArrendamiento [SK]<->[SK] MonitoreoArrendamientos
+
+  /* Se busca con GestionTransacciones gestionar la colaboración con los otros subdominios de negocio, pero quien se centra
+     en habilitar la funcionalidad en tiempo real son los contextos acotados que se mencionaron previamente. Falta
+     decidir si el upstream maneja un PL para reducir la carga de manejar un ACL, o si toda la carga recae en
+     GestionTransacciones y su ACL. No puede ser meramente CL el downstream porque tendría un costo mayor en caso de
+     que los upstream requieran cambios radicales*/
+  RegistroArrendamiento [U,PL]->[D,ACL] GestionTransacciones : CreacionArrendamiento
+  ActualizacionArrendamiento [U,PL]->[D,ACL] GestionTransacciones : ActualizacionArrendamientoRegistrado
+  ConsultaArrendamiento [U,PL]->[D,ACL] GestionTransacciones : ConsultaArrendamientoRegistrado
+  MonitoreoArrendamientos [U,PL]->[D,ACL] GestionTransacciones : MonitoreoArrendamientosRegistrados
+}
+
+BoundedContext RegistroArrendamiento {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para atender el registro de nuevos arrendamientos"
+  responsibilities = "Arrendamiento", "creacionArrendamiento"
+}
+BoundedContext ActualizacionArrendamiento {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para manejar actualizaciones de información de arrendamientos ya existentes"
+  responsibilities = "Arrendamiento", "actualizacionArrendamiento"
+}
+BoundedContext ConsultaArrendamiento {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para ofrecer capacidades de consulta de información de un arrendamiento y sus detalles"
+  responsibilities = "Arrendamientos", "consultaArrendamiento"
+}
+BoundedContext MonitoreoArrendamientos {
+  type FEATURE
+  domainVisionStatement "Contexto pensado para ofrecer capacidades de consulta de información del estado de los arrendamientos en general"
+  responsibilities = "Arrendamientos", "monitoreoArrendamientos"
+}
+BoundedContext GestionTransacciones implements InformacionTransacciones {
+  type FEATURE
+  domainVisionStatement "Contexto dedicado para manejo de información de arrendamientos, para los colaboradores que lo requieran (por
+  ejemplo, en contextos asociados a Información de Inquilinos, Características de Propiedades o Análisis de Mercados y Propiedades)"
+}
+
+UserStory CrearArrendamiento {
+  As an "AgenteHumano"
+    I want to "crear" an "Arrendamiento" with its "nombre", "valorArriendo", "fechaPago", "fechaVencimiento"
+  so that "Pueda dar información de un nuevo Arrendamiento de una Propiedad en seguimiento desde PDA."
+}
+
+UserStory ActualizarArrendamiento {
+  As an "AgenteHumano"
+    I want to "actualizar" an "Arrendamiento" with its "nombre", "valorArriendo", "fechaPago", "fechaVencimiento"
+  so that "Pueda dar información al día sobre un Arrendamiento de una Propiedad en seguimiento desde PDA."
+}
+
+UserStory ConsultarArrendamiento {
+  As an "AgenteHumano"
+    I want to "consultar" an "Arriendo" with its "nombre", "valorArriendo", "fechaPago", "fechaVencimiento"
+  so that "Pueda ver los detalles relevantes de un Arrendamiento en una Propiedad registrada por PDA."
+}
+
+UserStory MonitorearArrendamientos {
+  As an "AgenteHumano"
+    I want to "monitorear" a "Arriendos" with its "nombre", "valorArriendo", "fechaPago", "fechaVencimiento", "status"
+  so that "Pueda ver el estado de todos los Arrendamientos de las Propiedades registradas por PDA."
+}
+
+
