@@ -1,0 +1,55 @@
+Domain DominioPDA {
+    Subdomain DisponibilidadPropiedades
+
+/* Ver SubdominioDisponibilidadPropiedades.cml*/
+}
+
+ContextMap {
+    type = SYSTEM_LANDSCAPE
+    state = TO_BE
+    contains ActualizacionPropiedades, ListadoPropiedades
+    contains GestionPropiedades
+
+    /* Usan kernel compartido ya que se espera deban compartir la misma informacion*/
+    ActualizacionPropiedades [SK]<->[SK] ListadoPropiedades
+
+    /* Se busca con GestionPropiedades gestionar la colaboración con los otros subdominios de negocio, pero quien se centra
+     *      en habilitar la funcionalidad en tiempo real son los contextos acotados que se mencionaron previamente. Falta
+     *      decidir si el upstream maneja un PL para reducir la carga de manejar un ACL, o si toda la carga recae en
+     *      GestionPropiedades y su ACL. No puede ser meramente CL el downstream porque tendría un costo mayor en caso de
+     que los upstream requieran cambios radicales*/
+    ActualizacionPropiedades [U, PL]->[D, ACL] GestionPropiedades : ActualizacionPropiedadesRegistradas
+    ListadoPropiedades [U, PL]->[D, ACL] GestionPropiedades : ConsultaPropiedadesRegistradas
+}
+
+BoundedContext ActualizacionPropiedades {
+    type FEATURE
+    domainVisionStatement "Contexto pensado para manejar actualizaciones de información de disponibilidad de propiedades existentes."
+    responsibilities = "Propiedades", "ActualizacionPropiedades"
+}
+
+BoundedContext ListadoPropiedades {
+    type FEATURE
+    domainVisionStatement "Contexto pensado para ofrecer capacidades de consulta de información de disponibilidad de las propiedades."
+    responsibilities = "Propiedades", "ConsultaPropiedades"
+}
+
+BoundedContext GestionPropiedades implements DisponibilidadPropiedades {
+    type FEATURE
+    domainVisionStatement "Contexto dedicado para manejo de información de disponibilidad de propiedades, para los colaboradores que lo requieran."
+}
+
+UserStory ListarPropiedades {
+    As an "AgenteHumano"
+    I want to "Listar" a "Propiedades" with its "tamaño", "tipo de construcción", "zonificación", "tamaño del lote", "numero de pisos", 
+    "estacionamiento", "fotograficas", "ubicación"
+  so that "Pueda ver la disponibilidad relevantes de una propiedad seguida por PDA."
+}
+
+UserStory ActualizarPropiedades {
+    As a "Sistema"
+    I want to "actualizar" a "Propiedad" with its "tamaño", "tipo de construcción", "zonificación", "tamaño del lote", "numero de pisos", 
+    "estacionamiento", "fotograficas", "ubicación"
+  so that "Pueda mantener actualizada la información sobre una  propiedad en seguimiento desde PDA."
+}
+
