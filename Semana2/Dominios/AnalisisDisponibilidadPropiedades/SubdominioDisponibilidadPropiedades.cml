@@ -1,0 +1,13 @@
+Domain DominioPDA {
+    Subdomain DisponibilidadPropiedades {
+        type CORE_DOMAIN
+        domainVisionStatement "Con este modelo de dominio se busca gestionar y actualizar de manera integral el listado de todas
+        las propiedades comerciales. Esto incluye información detallada sobre la estructura, disponibilidad,
+        ubicación, dimensiones, zonificación y otros aspectos clave que faciliten a los usuarios de Propiedades de los Alpes (PDA) tomar 
+        decisiones informadas sobre alquileres, ventas y transacciones inmobiliarias."
+
+        Entity Propiedad
+    }
+
+}
+

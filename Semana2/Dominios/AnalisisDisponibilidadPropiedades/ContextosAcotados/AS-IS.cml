@@ -1,0 +1,18 @@
+ContextMap {
+    type = SYSTEM_LANDSCAPE
+    state = AS_IS
+    contains DisponibilidadDePropiedades
+}
+
+BoundedContext DisponibilidadDePropiedades {
+    type SYSTEM
+    domainVisionStatement "Abstrae del modelo las funcionalidades relacionadas con el listado de propiedades basados en la disponibilidad
+    para el sistema de Propiedades de los Alpes (PDA). Se encarga de listar, almacenar y recopilar información adicional de otros subsistemas,
+    para proporcionar el acceso al listado actualizado de las propiedades"
+    responsibilities = "Propiedades", "consultarPropiedades", "actualizacionPropiedades"
+}
+
+/*
+ *   Dado que no se detecta una delimitación clara de contextos dentro del dominio de Disponibilidad de Propiedades, 
+ *   el diagrama resultante es un diagrama de Venn solitario.
+ */
