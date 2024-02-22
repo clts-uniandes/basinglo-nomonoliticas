@@ -1,0 +1,39 @@
+version: '3.8'
+
+networks:
+  app_net:
+  user_net:
+
+services:
+
+  users:
+    build: ./userManagement
+    env_file:
+      - ./userManagement/.env
+    ports:
+      - "3000:8000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - app_net
+      - user_net
+    depends_on:
+      db_users:
+        condition: service_healthy
+
+  db_users:
+    image: postgres:12.4-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    networks:
+      - user_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
