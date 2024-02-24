@@ -1,3 +1,7 @@
+import pulsar
+from pulsar.schema import *
+from os import environ as env
+
 from ....users.domain.entities import User
 from ....users.domain.schemas import UserSchema
 from src.api.utils.decorators import db_session
@@ -44,5 +48,16 @@ def _register_user(session, request):
 
     session.add(user)
     session.commit()
+    
+    class UserCreatedEvent(Record):
+        email = String()
+    HOSTNAME = env.get('BROKER_PATH', default="broker")
+    PULSAR_TOPIC = 'user_created'
+    client = pulsar.Client(f'pulsar://{HOSTNAME}:6650')
+    producer = client.create_producer(PULSAR_TOPIC, schema=AvroSchema(UserCreatedEvent))
+    event_data = UserCreatedEvent(email=email_request)
+    producer.send(event_data)
+    producer.close()
+    client.close()
 
     return UserSchema().dump(user)

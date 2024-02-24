@@ -25,7 +25,3 @@ clean:
 .PHONY: clean_all
 clean_all:
 	docker-compose -f $(DOCKER_COMPOSE_LOCAL) down -v --remove-orphans --rmi all
-
-.PHONY: run_users
-run_users:
-	docker-compose -f $(DOCKER_COMPOSE_LOCAL) up users
