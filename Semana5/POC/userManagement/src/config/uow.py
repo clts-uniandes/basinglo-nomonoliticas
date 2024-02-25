@@ -1,4 +1,4 @@
-from .db import db
+from src.config.db import db
 from src.seedwork.infraestructure.uow import UnitOfWork, Batch
 
 class UnitOfWorkSQLAlchemy(UnitOfWork):
@@ -33,6 +33,7 @@ class UnitOfWorkSQLAlchemy(UnitOfWork):
         super().commit()
 
     def rollback(self, savepoint=None):
+        print('rollback 1')
         if savepoint:
             savepoint.rollback()
         else:

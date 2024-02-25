@@ -5,3 +5,4 @@ from ....seedwork.application.dto import DTO
 class CredentialAppDTO(DTO):
     username: str
     password: str
+    salt: str

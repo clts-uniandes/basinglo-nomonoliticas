@@ -24,6 +24,7 @@ class UnitOfWork(ABC):
         return self
 
     def __exit__(self, *args):
+        print('exit')
         self.rollback()
 
     def _get_events(self, batches=None):
@@ -52,6 +53,7 @@ class UnitOfWork(ABC):
 
     @abstractmethod
     def rollback(self, savepoint=None):
+        print('rollback 2')
         self._clear_batches()
     
     @abstractmethod
@@ -112,12 +114,15 @@ class UnitOfWorkPort:
 
     @staticmethod
     def commit():
+        print('init commit')
         uow = unit_of_work()
         uow.commit()
         save_unit_of_work(uow)
+        print('end commit')
 
     @staticmethod
     def rollback(savepoint=None):
+        print('rollback 3')
         uow = unit_of_work()
         uow.rollback(savepoint=savepoint)
         save_unit_of_work(uow)
@@ -135,6 +140,8 @@ class UnitOfWorkPort:
 
     @staticmethod
     def register_batch(operation, *args, lock=Lock.PESSIMIST, **kwargs):
+        print('init register batch')
         uow = unit_of_work()
         uow.register_batch(operation, *args, lock=lock, **kwargs)
         save_unit_of_work(uow)
+        print('end register batch')

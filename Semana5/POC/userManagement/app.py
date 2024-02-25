@@ -12,8 +12,8 @@ def config_app():
 
     user = env.get("DB_USER", "postgres")
     password = env.get("DB_PASSWORD", "postgres")
-    host = env.get("DB_HOST", "db_users")
-    port = env.get("DB_PORT", "5432")
+    host = env.get("DB_HOST", "localhost")
+    port = env.get("DB_PORT", "5433")
     db_name = env.get("DB_NAME", "users")
     db_driver = env.get("DB_DRIVER", "postgresql")
     flask_app.config["DEBUG"] = True

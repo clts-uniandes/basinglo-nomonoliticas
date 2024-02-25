@@ -20,7 +20,7 @@ class RegisterCredential(Command):
 class RegisterCredentialHandler(RegisterCredentialBaseHandler):
 
     def handle(self, command: RegisterCredential):
-        credential_dto = CredentialAppDTO(username=command.username, password=command.password)
+        credential_dto = CredentialAppDTO(username=command.username, password=command.password, salt='')
 
         credential: Credential = self.credential_factory.create_object(credential_dto, MapperCredential())
         credential.create_credential(credential)
@@ -28,7 +28,7 @@ class RegisterCredentialHandler(RegisterCredentialBaseHandler):
         repository = self.repo_factory.create_object(CredentialsRepository.__class__)
 
         UnitOfWorkPort.register_batch(repository.add, credential)
-        UnitOfWorkPort.savepoint()
+        #UnitOfWorkPort.savepoint()
         UnitOfWorkPort.commit()
 
 
