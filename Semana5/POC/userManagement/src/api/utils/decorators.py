@@ -1,7 +1,7 @@
 from functools import wraps
 from http import HTTPStatus
 
-from ...config.db import SessionLocal
+from ...config.db import db
 from .exceptions import CustomException
 from .exceptions import InvalidParameterException
 from .exceptions import PreconditionFailedException
@@ -64,7 +64,7 @@ def db_session(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        session = SessionLocal()
+        session = db.session
         try:
             result = func(session, *args, **kwargs)
             return result

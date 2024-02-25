@@ -1,8 +1,4 @@
-version: '3.8'
-
-networks:
-  app_net:
-  user_net:
+version: '3.9'
 
 services:
 
@@ -18,7 +14,6 @@ services:
         delay: 5s
         max_attempts: 3
     networks:
-      - app_net
       - user_net
     depends_on:
       db_users:
@@ -27,13 +22,24 @@ services:
   db_users:
     image: postgres:12.4-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: users
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=users
     networks:
       - user_net
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_temp:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 2s
       timeout: 5s
       retries: 5
+
+networks:
+  user_net:
+    driver: bridge
+
+volumes:
+  postgres_temp:
