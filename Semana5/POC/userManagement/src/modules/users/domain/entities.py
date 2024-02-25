@@ -22,3 +22,14 @@ class User(db.Model):
     expireAt = Column(DateTime, nullable=True)
     createdAt = Column(DateTime, server_default=func.now())
     updateAt = Column(DateTime, nullable=True)
+
+class PersonalInformation(db.Model):
+    __tablename__ = "personalInformation"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    userName = Column(String)
+    password = Column(String)
+    email = Column(String)
+    dni = Column(int)
+    fullName = Column(String)
+    phoneNumber = Column(String)
+    createdAt = Column(DateTime, server_default=func.now())

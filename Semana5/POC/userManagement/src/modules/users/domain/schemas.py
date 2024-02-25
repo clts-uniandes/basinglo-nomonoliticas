@@ -2,6 +2,7 @@ from marshmallow import fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from .entities import User
+from .entities import PersonalInformation
 
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
@@ -17,3 +18,18 @@ class UserSchema(SQLAlchemyAutoSchema):
     status = fields.String()
     createdAt = fields.DateTime(format="iso")
     updateAt = fields.DateTime(format="iso")
+
+class PersonalInformationSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PersonalInformation
+        exclude = ("password")
+    id = fields.String()
+    username = fields.String()
+    email = fields.String()
+    fullName = fields.String()
+    dni = fields.String()
+    phoneNumber = fields.String()
+    createdAt = fields.DateTime(format="iso")
+    
+    
+
