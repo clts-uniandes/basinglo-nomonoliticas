@@ -24,6 +24,7 @@ class RegisterCredentialHandler(RegisterCredentialBaseHandler):
 
         credential: Credential = self.credential_factory.create_object(credential_dto, MapperCredential())
         credential.create_credential(credential)
+        print(credential)
 
         repository = self.repo_factory.create_object(CredentialsRepository.__class__)
 

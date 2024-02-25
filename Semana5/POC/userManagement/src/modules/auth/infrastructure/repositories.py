@@ -27,8 +27,8 @@ class CredentialsPostgresRepository(CredentialsRepository):
         raise NotImplementedError 
 
     def add(self, credential: Credential):
-        credential = self.get_by_username(credential.username)
-        if(credential):
-            raise Exception("Credential already exist")
+        old_credential = db.session.query(CredentialDTO).filter_by(username=credential.username).first()
+        if old_credential is not None:
+            raise Exception('Credential already exist')
         credential_dto = self.credential_factory.create_object(credential, CredentialMapper())
         db.session.add(credential_dto)
