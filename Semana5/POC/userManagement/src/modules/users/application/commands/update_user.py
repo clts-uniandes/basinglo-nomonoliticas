@@ -28,3 +28,25 @@ def _update_user(session, token, user_id, request):
         session.commit()
 
     return UserSchema().dump(user)
+
+@db_session
+def _save_personal_info(session, token, user_dto, request):
+    data = request.get_json()
+    
+    if data is None:
+        raise InvalidParameterException("Request body is empty.")
+    
+    user = session.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise ResourceNotFoundException("User not found.")
+
+
+
+@dataclass
+class RegisterPersonalInformation(Command):
+    email = str
+    dni = int
+    fullName = str
+    phoneNumber = str
+    
+class RegisterPersonalInformationHandler()

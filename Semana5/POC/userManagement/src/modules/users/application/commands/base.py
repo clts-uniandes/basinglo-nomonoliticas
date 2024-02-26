@@ -1,0 +1,2 @@
+class RegisterPersonalInformationHandler(CommandHandler):
+    
