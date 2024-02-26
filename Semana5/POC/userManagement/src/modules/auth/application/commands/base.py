@@ -13,4 +13,4 @@ class RegisterCredentialBaseHandler(CommandHandler):
     
     @property
     def credential_factory(self):
-        return self._credential_factory    
+        return self._credential_factory

@@ -11,7 +11,7 @@ Base = db.declarative_base()
 class Credential(db.Model):
     __tablename__ = "credentials"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True)#, default=uuid4
     username = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=True)
     salt = Column(String, nullable=True)

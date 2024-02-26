@@ -4,8 +4,7 @@ from .dto import Credential as CredentialDTO
 from src.modules.auth.infrastructure.utils import encrypt_password
 
 class CredentialMapper(Mapper):
-    _FORMATO_FECHA = '%Y-%m-%dT%H:%M:%SZ'
-
+    
     def find_type(self) -> type:
         return Credential.__class__
 
@@ -20,5 +19,5 @@ class CredentialMapper(Mapper):
         return credential_dto
 
     def dto_to_entity(self, dto: CredentialDTO) -> Credential:
-        credential = Credential(id=dto.id, created_at=dto.createdAt, username=dto.username, password=dto.password, salt=dto.salt)        
+        credential = Credential(id=dto.id, created_at=dto.createdAt, username=dto.username, password=dto.password, salt=dto.salt)
         return credential

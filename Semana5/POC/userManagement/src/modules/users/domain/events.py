@@ -6,10 +6,6 @@ from src.seedwork.domain.events import DomainEvent
 from datetime import datetime
 
 @dataclass
-class CredentialCreated(DomainEvent):
-    id_credential: uuid.UUID = None
+class PersonalInfoCreated(DomainEvent):
+    id_personalInfo: uuid.UUID = None
     created_at: datetime = None
-    email: str = None
-    dni: str = None
-    fullName: str = None
-    phoneNumber: str = None

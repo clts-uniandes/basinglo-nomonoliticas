@@ -1,22 +1,35 @@
 from http import HTTPStatus
 from flask import request
 
-from ..seedwork.presentation.api import crear_blueprint
-from ..api.utils.decorators import handle_exceptions, is_authenticated
-from ..modules.users.application.queries.get_user import _get_user
-from ..modules.users.application.commands.update_user import _update_user
+from src.seedwork.presentation.api import crear_blueprint
+from src.modules.users.application.commands.save_personal_information import SavePersonalInfo
+from src.modules.users.application.mappers import MapperUsersDTOJson
+from src.seedwork.application.commands import exec_command
+from src.seedwork.domain.exceptions import DomainException
 
 users_bp = crear_blueprint('users', '/users')
 
-@users_bp.route("/<string:user_id>", methods=["PATCH"])
-@handle_exceptions
-@is_authenticated
-def update_user(token, user_id):
-    return _update_user(token, user_id, request), HTTPStatus.OK
+@users_bp.route("register", methods=["POST"])
+def register_credential():
+    try:
+        pi_dict = request.json
+        pi_map = MapperUsersDTOJson()
+        pi_dto = pi_map.external_to_dto(pi_dict)
+        command = SavePersonalInfo(id_credential=pi_dto.id_credential,
+            email=pi_dto.email,
+            dni=pi_dto.dni,
+            fullName=pi_dto.fullName,
+            phoneNumber=pi_dto.phoneNumber,)
+        exec_command(command)
+        return { 'msg': 'Data saved'}, HTTPStatus.ACCEPTED
+    except DomainException as e:
+        return { 'msg': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+    except Exception as e:
+        return { 'msg': str(e)}, HTTPStatus.BAD_REQUEST
+   
 
-
-@users_bp.route("/<string:user_id>", methods=["GET"])
-@handle_exceptions
-@is_authenticated
-def get_user(token, user_id):
-    return _get_user(token, user_id), HTTPStatus.OK
+# @users_bp.route("/<string:user_id>", methods=["GET"])
+# @handle_exceptions
+# @is_authenticated
+# def get_user(token, user_id):
+#    pass

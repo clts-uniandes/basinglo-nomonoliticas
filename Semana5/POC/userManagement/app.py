@@ -3,9 +3,11 @@ from os import environ as env
 
 def import_alchemy_models():
     import src.modules.auth.infrastructure.dto
+    import src.modules.users.infrastructure.dto
 
 def register_handlers():
     import src.modules.auth.application
+    import src.modules.users.application
 
 def config_app():
     # init flask app

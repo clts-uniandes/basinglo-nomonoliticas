@@ -33,6 +33,7 @@ class AgregationRoot(Entity, ValidateRulesMixin):
 
     def add_event(self, event: DomainEvent):
         self.events.append(event)
+        print("Evento "+f'{type(event).__name__}Domain'+" publicado")
     
     def clear_events(self):
         self.events = list()
