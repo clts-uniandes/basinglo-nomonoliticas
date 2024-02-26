@@ -28,7 +28,7 @@ services:
     networks:
       - user_net
     ports:
-      - 5432:5432
+      - 5433:5432
     volumes:
       - postgres_temp:/var/lib/postgresql/data
     healthcheck:

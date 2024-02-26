@@ -1,36 +1,28 @@
-import datetime
+from dataclasses import dataclass
 
-from ....users.domain.entities import User
-from ....auth.domain.schemas import EntitySchema
-from src.api.utils.decorators import db_session
-from src.api.utils.exceptions import InvalidParameterException, ResourceNotFoundException
-from ....auth.infrastructure.utils import get_token, verify_password
+from src.seedwork.application.queries import Query, QueryResult, exec_query as query
+from src.modules.auth.infrastructure.repositories import CredentialsRepository
+from .base import CredentialQueryBaseHandler
+from src.modules.auth.application.mappers import MapperCredential
+from src.modules.auth.infrastructure.utils import verify_password
 
-@db_session
-def _authenticate_user(session, request):
-    data = request.get_json()
+@dataclass
+class AuthenticateUser(Query):
+    username: str
+    password: str
 
-    if data is None:
-        raise InvalidParameterException("Request body is empty.")
+class AuthenticateUserHandler(CredentialQueryBaseHandler):
 
-    username_request = data.get("username", None)
-    password_request = data.get("password", None)
+    def handle(self, query: AuthenticateUser) -> QueryResult:
+        repository = self.repo_factory.create_object(CredentialsRepository.__class__)
+        credential =  self.credential_factory.create_object(repository.get_by_username(query.username), MapperCredential())
+        verified_password = verify_password(hashed_password=credential.password, salt=credential.salt, password_to_check=query.password)
+        if not verified_password:
+            raise Exception("Invalid credentials")
+        
+        return QueryResult(result=credential)
 
-    if username_request is None or password_request is None:
-        raise InvalidParameterException("Request body is not complete.")
-
-    user = session.query(User).filter(User.username == username_request).first()
-    if user is None:
-        raise ResourceNotFoundException("Username not exists.")
-    else:
-        salt_password = user.salt
-        password_user_to_check = user.password
-        verify = verify_password(password_user_to_check, salt_password, password_request)
-        if not verify:
-            raise ResourceNotFoundException("Password is not correct.")
-        else:
-            user.token = get_token()
-            today = datetime.datetime.now()
-            user.expireAt = today + datetime.timedelta(minutes=30)
-            session.commit()
-            return EntitySchema().dump(user)
+@query.register(AuthenticateUser)
+def exec_query_authenticate_user(query: AuthenticateUser):
+    handler = AuthenticateUserHandler()
+    return handler.handle(query)

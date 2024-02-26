@@ -1,5 +1,4 @@
 from src.seedwork.domain.rules import BusinessRule
-from .entities import Credential
 
 class PasswordIsValid(BusinessRule):
     password: str

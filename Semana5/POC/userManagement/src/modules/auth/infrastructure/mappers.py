@@ -20,5 +20,5 @@ class CredentialMapper(Mapper):
         return credential_dto
 
     def dto_to_entity(self, dto: CredentialDTO) -> Credential:
-        credential = Credential(id=dto.id, created_at=dto.createdAt, username=dto.username, password=dto.password)        
+        credential = Credential(id=dto.id, created_at=dto.createdAt, username=dto.username, password=dto.password, salt=dto.salt)        
         return credential
