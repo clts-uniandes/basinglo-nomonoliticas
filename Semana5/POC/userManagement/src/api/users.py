@@ -26,10 +26,3 @@ def register_credential():
         return { 'msg': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
     except Exception as e:
         return { 'msg': str(e)}, HTTPStatus.BAD_REQUEST
-   
-
-# @users_bp.route("/<string:user_id>", methods=["GET"])
-# @handle_exceptions
-# @is_authenticated
-# def get_user(token, user_id):
-#    pass

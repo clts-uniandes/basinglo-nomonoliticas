@@ -2,38 +2,33 @@
 
 ## Tabla de contenido
 
-- [Pre-requisitos para cada microservicio](#pre-requisitos-para-cada-microservicio)
+- [Pre-requisitos para ejecución](#pre-requisitos-para-ejecución)
 - [Estructura de cada microservicio](#estructura-de-cada-microservicio)
   - [Archivos de soporte](#archivos-de-soporte)
   - [Carpeta src](#carpeta-src)
-  	- [Carpeta domain](#carpeta-domain)
-	- [Carpeta tests](#carpeta-tests)
+  	- [Carpeta api](#carpeta-api)
+    - [Carpeta config](#carpeta-config)
+  	- [Carpeta modules](#carpeta-modules)
+  	- [Carpeta seedwork](#carpeta-seedwork)
 - [Ejecutar un microservicio](#ejecutar-un-microservicio)
   - [Makefile](#makefile)
   - [Variables de entorno](#variables-de-entorno)
   - [Ejecutar el servidor](#ejecutar-el-servidor)
-  - [Ejecutar pruebas](#ejecutar-pruebas)
   - [Ejecutar desde Dockerfile](#ejecutar-desde-dockerfile)
 - [Ejecutar Docker Compose](#ejecutar-docker-compose)
 - [Ejecutar Colección de Postman](#ejecutar-colección-de-postman)
-- [Ejecutar evaluador github action workflow](#ejecutar-evaluador-github-action-workflow)
-- [Resultados Entrega 1](#resultados-entrega-1)
-  - [Covertura](#covertura)
-  - [Evaluador](#evaluador)
 
-## Pre-requisitos para cada microservicio
-- Python ~3.10
+
+## Pre-requisitos para ejecución
 - Docker
 - Docker-compose
-- Postman
-- PostgreSQL
-    - Las instrucciones pueden variar según el sistema operativo. Consulta [la documentación](https://www.postgresql.org/download/). Si estás utilizando un sistema operativo basado en Unix, recomendamos usar [Brew](https://wiki.postgresql.org/wiki/Homebrew).
+- Make
+    - Las instrucciones pueden variar según el sistema operativo. Consulta [para Windows](https://gnuwin32.sourceforge.net/packages/make.htm). Si estás utilizando un sistema operativo basado en Unix, recomendamos usar [Brew](https://wiki.postgresql.org/wiki/Homebrew) con el commando `brew install make`.
 
 ## Estructura de cada microservicio
-Cada microservicio utiliza Python y Flask para ejecutar el servidor, y pytest para ejecutar las pruebas unitarias. En general, dentro de cada uno de ellos hay una carpetas principal: `src`, así como algunos archivos de soporte.
+Cada microservicio utiliza Python y Flask para ejecutar el servidor. En general, dentro de cada uno de ellos hay una carpetas principal: `src`, así como algunos archivos de soporte. Para que comprenda lo anterior, dirijase a /userManagement.
 
 #### Archivos de soporte
-- `.coveragerc`: Este archivo configura las opciones de cobertura de código, permitiendo especificar qué archivos o directorios deben ser incluidos o excluidos de los informes de cobertura.
 - `.env`: Archivo de plantilla Env utilizado para definir variables de entorno. Consulte la sección  **Variables de entorno**.
 - `app.py`: Archivo principal que inicializa la lógica principal de la aplicación. Aquí se registan las rutas y la base de datos.
 - `Dockerfile`: Definición para construir la imagen Docker del microservicio. Consulta la sección **Ejecutar desde Dockerfile**.
@@ -41,26 +36,30 @@ Cada microservicio utiliza Python y Flask para ejecutar el servidor, y pytest pa
 - `requiremets.txt`: Lista de dependencias de Python necesarias para la aplicación. Se utiliza comúnmente con herramientas como pip para instalar todas las dependencias necesarias en un entorno virtual.
 
 ### Carpeta src
-Esta carpeta contiene el código y la lógica necesarios para declarar y ejecutar la API del microservicio, así como para la comunicación con la base de datos. Hay dos carpetas principales, así como algunos archivos de soporte:
-- `/domain`: Define las rutas y los servicios del dominio, así como algunos archivos de soporte.
-- `/tests`: Esta carpeta contiene las pruebas para los componentes principales del microservicio que han sido declarados en la carpeta `/domain`
-- `model.py`: Contiene un modelo del dominio que realiza la configuración básica de una tabla e incluye las columnas `createdAt` y `updatedAt`.
-- `scheme.py`: Define los esquemas de datos utilizados en la aplicación para validar las solicitudes entrantes y las respuestas salientes.
-- `db.py`: Configura la conexión a la base de datos utilizando SQLAlchemy. Se define la URL de conexión utilizando las variables de entorno proporcionadas o los valores por defecto, y se crea el motor de la base de datos y la sesión local para interactuar con ella.
+Esta carpeta contiene el código y la lógica necesarios para declarar y ejecutar la API del microservicio, así como para la comunicación con la base de datos. Hay cuatro carpetas principales:
+- `/api`: Define las rutas y los servicios del dominio, así como algunos archivos de soporte.
+- `/config`: Esta carpeta contiene los archivos para la configuración de `db` y `uow`.
+- `/modules`: Contiene los modulos definidos para el dominio de gestión de usuarios. Estos son auth y users.
+- `/seedwork`: Contiene clases base que se usan como base para los dominios definidos.
 
-#### Carpeta domain
-- `decorators.py`: Contiene dos decoradores: **handle_exceptions**, que maneja excepciones específicas generando respuestas HTTP adecuadas junto con mensajes de error personalizados, y **db_session**, que garantiza la creación y cierre apropiados de sesiones de base de datos alrededor de la función decorada para mantener la integridad de las transacciones y evitar fugas de recursos.
-- `exceptions.py`: Define excepciones personalizadas utilizadas para manejar casos de error específicos en la aplicación. Cada excepción proporciona un mensaje descriptivo y hereda de la clase base Exception. Estas excepciones se utilizan para representar escenarios como parámetros inválidos, recursos inexistentes, falta de autorización, entre otros, facilitando la gestión uniforme de errores en la API.
-- `routes.py`: Define las rutas de la API utilizando Flask. Cada ruta tiene asignado un método HTTP y una función asociada que maneja la solicitud. Las funciones decoradas con handle_exceptions gestionan posibles errores de manera uniforme, devolviendo respuestas adecuadas junto con los códigos de estado HTTP correspondientes.
-- `services.py`: Contiene funciones para la lógica de negocio de la API, validación de datos y manejo de excepciones.
-- `utils.py` Proporciona funciones utilitarias esenciales para la aplicación.
+#### Carpeta api
+- `utils/decorators.py`: Contiene decoradores: **handle_exceptions**, que maneja excepciones específicas generando respuestas HTTP adecuadas junto con mensajes de error personalizados, y **db_session**, que garantiza la creación y cierre apropiados de sesiones de base de datos alrededor de la función decorada para mantener la integridad de las transacciones y evitar fugas de recursos. **is_authenticated** que valida si la petición contiene un token de autenticación.
+- `utils/exceptions.py`: Define excepciones personalizadas utilizadas para manejar casos de error específicos en la aplicación. Cada excepción proporciona un mensaje descriptivo y hereda de la clase base Exception. Estas excepciones se utilizan para representar escenarios como parámetros inválidos, recursos inexistentes, falta de autorización, entre otros, facilitando la gestión uniforme de errores en la API.
+- `auth.py` y `users.py`: Define las rutas de la API utilizando Flask. Cada ruta tiene asignado un método HTTP y una función asociada que maneja la solicitud.
 
-#### Carpeta tests
-- `factory.py`: Proporciona funciones para crear modelos de dominio ficticios y generar grandes cantidades de prueba. Utiliza la biblioteca Faker para generar datos simulados.
-- `test_<dominio>.py`: Proporciona funciones de pruebas de los servicios del dominio.
+#### Carpeta config
+- `db.py`: Proporciona una instancia para el acceso a las capacidades de la db.
+- `uow.py`: Proporciona una abstracción de la unidad de trabajo.
+
+#### Carpeta modules
+- `/auth`: Proporciona las capas de aplicación, dominio e infraestructura para el modulo de autenticación.
+- `/users`: Proporciona las capas de aplicación, dominio e infraestructura para el modulo de users.
+
+#### Carpeta seedwork
+- Proporciona las capas de aplicación, dominio, infraestructura y presentación que contienen las bases que se usan para los dominios definidos.
 
 ## Ejecutar un microservicio
-En cada microservicio se encontrará la documentación de despliegue en la sesión **Run with Makefile**, que incluye instrucciones específicas para ser ejecutado.
+En cada microservicio se encontrará la documentación de despliegue en la sesión **Run with Makefile**, que incluye instrucciones específicas para ser ejecutado. En este orden de ideas, en la ruta userManagement encontrará un README.md donde se indica que la ejecución del docker se puede hacer a partir del comando `make run`.
 
 ### Makefile
 El Makefile proporciona comandos convenientes para ejecutar el microservicio de forma fácil y rápida.
@@ -73,6 +72,7 @@ El servidor Flask y las pruebas unitarias utilizan variables de entorno para con
 - DB_HOST: Host de la base de datos Postgres
 - DB_PORT: Puerto de la base de datos Postgres
 - DB_NAME: Nombre de la base de datos Postgres
+- PYTHONUNBUFFERED: Habilita el debugging de python
 
 Estas variables de entorno deben especificarse en `.env` de cada microservicio.
 
@@ -80,13 +80,6 @@ Estas variables de entorno deben especificarse en `.env` de cada microservicio.
 Una vez que las variables de entorno estén configuradas correctamente, para ejecutar el servidor utiliza el siguiente comando:
 ```bash
 $> make run
-```
-En el caso que haga una modificación y requiera levantar todo de nuevo es recomentdado que ejecute **make clean_all** antes del anterio comando.
-
-### Ejecutar pruebas
-Para ejecutar las pruebas unitarias de los microservicios y establecer el porcentaje mínimo de cobertura del conjunto de pruebas en 70%, ejecuta el siguiente comando:
-```bash
-$> make test_all
 ```
 En el caso que haga una modificación y requiera levantar todo de nuevo es recomentdado que ejecute **make clean_all** antes del anterio comando.
 
@@ -107,4 +100,122 @@ $> docker-compose -f "<RUTA_DEL_ARCHIVO_DOCKER_COMPOSE>" up --build
 
 # Ejemplo
 $> docker-compose -f "docker-compose.yml" up --build
+```
+
+## Ejecutar Colección de Postman
+Importe la siguiente colección:
+```
+{
+	"info": {
+		"_postman_id": "b32f1f41-e581-4d87-9c7c-aa705f5d203f",
+		"name": "DDD_without_cookies",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6293622"
+	},
+	"item": [
+		{
+			"name": "Register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"jorcasca\",\r\n    \"password\": \"jorcasca\",\r\n    \"email\": \"jorcasca@gmail.com\",\r\n    \"dni\": \"1107097248\",\r\n    \"fullName\": \"Jorge Eliecer Castaño Valencia\",\r\n    \"phoneNumber\": \"3166186895\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{USER_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"jorcasca\",\n    \"password\": \"jorcasca\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Save personal info",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id_credential\": \"05fca023-4710-4497-86d9-78f60db8b5dd\",\r\n    \"email\": \"jorcasca2@gmail.com\",\r\n    \"dni\": \"1234567890\",\r\n    \"fullName\": \"Jorge 2 \",\r\n    \"phoneNumber\": \"1234567890\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "USER_TOKEN",
+			"value": "{{USER_TOKEN}}"
+		}
+	]
+}
 ```

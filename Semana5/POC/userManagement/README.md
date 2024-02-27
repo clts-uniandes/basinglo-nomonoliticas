@@ -2,51 +2,115 @@
 
 ## Microservice structure
 ```bash
-├───src/
-│   ├───domain/
-│   │   ├───decorators.py
-│   │   ├───exceptions.py
-│   │   ├───routes.py
-│   │   ├───services.py
-│   │   └───utils.py
-│   ├───tests/
-│   ├───db.py
-│   ├───models.py
-│   ├───schema.py
-├───.env
-├───app.py
-├───Dockerfile
-├───requirements.txt
-└───README.md
+├── Dockerfile
+├── README.md
+├── __init__.py
+├── app.py
+├── pytest.ini
+├── requirements.txt
+└── src
+    ├── __init__.py
+    ├── api
+    │   ├── __init__.py
+    │   ├── auth.py
+    │   ├── users.py
+    │   └── utils
+    │       ├── __init__.py
+    │       ├── decorators.py
+    │       └── exceptions.py
+    ├── config
+    │   ├── __init__.py
+    │   ├── db.py
+    │   └── uow.py
+    ├── modules
+    │   ├── __init__.py
+    │   ├── auth
+    │   │   ├── __init__.py
+    │   │   ├── application
+    │   │   │   ├── __init__.py
+    │   │   │   ├── commands
+    │   │   │   │   ├── __init__.py
+    │   │   │   │   ├── base.py
+    │   │   │   │   └── register_credential.py
+    │   │   │   ├── dto.py
+    │   │   │   ├── handlers.py
+    │   │   │   ├── mappers.py
+    │   │   │   └── queries
+    │   │   │       ├── __init__.py
+    │   │   │       ├── authenticate_user.py
+    │   │   │       └── base.py
+    │   │   ├── domain
+    │   │   │   ├── __init__.py
+    │   │   │   ├── entities.py
+    │   │   │   ├── events.py
+    │   │   │   ├── factories.py
+    │   │   │   ├── repositories.py
+    │   │   │   └── rules.py
+    │   │   └── infrastructure
+    │   │       ├── __init__.py
+    │   │       ├── dto.py
+    │   │       ├── exceptions.py
+    │   │       ├── factories.py
+    │   │       ├── mappers.py
+    │   │       ├── repositories.py
+    │   │       └── utils.py
+    │   └── users
+    │       ├── __init__.py
+    │       ├── application
+    │       │   ├── __init__.py
+    │       │   ├── commands
+    │       │   │   ├── __init__.py
+    │       │   │   ├── base.py
+    │       │   │   └── save_personal_information.py
+    │       │   ├── dto.py
+    │       │   ├── handlers.py
+    │       │   └── mappers.py
+    │       ├── domain
+    │       │   ├── __init__.py
+    │       │   ├── entities.py
+    │       │   ├── events.py
+    │       │   ├── factories.py
+    │       │   └── repositories.py
+    │       └── infrastructure
+    │           ├── __init__.py
+    │           ├── dto.py
+    │           ├── exceptions.py
+    │           ├── factories.py
+    │           ├── mappers.py
+    │           └── repositories.py
+    └── seedwork
+        ├── __init__.py
+        ├── application
+        │   ├── __init__.py
+        │   ├── commands.py
+        │   ├── dto.py
+        │   ├── handlers.py
+        │   └── queries.py
+        ├── domain
+        │   ├── __init__.py
+        │   ├── entities.py
+        │   ├── events.py
+        │   ├── exceptions.py
+        │   ├── factories.py
+        │   ├── mixins.py
+        │   ├── repositories.py
+        │   └── rules.py
+        ├── infraestructure
+        │   ├── __init__.py
+        │   └── uow.py
+        └── presentation
+            ├── __init__.py
+            └── api.py
 ```
-### Structure description
-- `domain` - contains all the business logic of the microservice
-- `domain/decorators.py` - contains decorators for the microservice
-- `domain/exceptions.py` - contains custom exceptions for the microservice
-- `domain/routes.py` - contains all the routes of the microservice
-- `domain/services.py` - contains all the services of the microservice
-- `domain/utils.py` - contains all the utilities of the microservice
-- `test` - contains all the tests of the microservice
-- `db.py` - contains the database connection of the microservice
-- `models.py` - contains the model of the microservice
-- `schema.py` - contains the schemas of the microservice
-- `.env` - contains the environment variables of the microservice
-- `app.py` - contains the main application of the microservice
-- `Dockerfile` - contains the docker configuration of the microservice
-- `requirements.txt` - contains the dependencies of the microservice
-- `README.md` - contains the documentation of the microservice
 
 ## Microservice documentation
 ### Endpoints
-- `POST /users` - Create a new User
-- `POST /users/auth` - Generate a new token from user
-- `PATCH /users/<id>` - Update a user
-- `GET /users/me` - Get information User. Necesary a token into headers
-- `POST /users/reset` - reset the database
-- `GET /users/ping` - returns the health of the microservice
+- `POST /auth/signup` - Create a new Credential and User
+- `POST /auth/signin` - Generate a new token from user
+- `PATCH /users/register` - Create a new User (used for testing)
 
 ## Requirements
-- Python >= 3.9
+- Python = 3.10
 - PostgreSQL >= 12
 - Docker
 
@@ -74,22 +138,6 @@ docker build -t users .
 # run users microservice
 docker run -p 3000:8000 users python app.py
 ```
-
-## How to test
-It's recommended to use the Makefile commands to test the microservice. If you don't have `make` installed, you can run the commands manually.
-
-### Test with Makefile
-To test the microservice with the Makefile, you have to run the following commands:
-```bash
-# run users microservice tests with Makefile
-cd ..
-make users_tests
-```
-### Test with Docker
-To test the microservice with Docker, you have to run the following commands:
-```bash
-# build users microservice
-docker build -t users .
 
 # Make sure that you have a postgres database running
 
