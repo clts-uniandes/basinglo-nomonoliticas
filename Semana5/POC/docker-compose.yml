@@ -30,7 +30,7 @@ services:
     ports:
       - 5433:5432
     volumes:
-      - postgres_temp:/var/lib/postgresql/data
+      - users_postgres_temp:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 2s
@@ -65,7 +65,7 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - postgres_temp:/var/lib/postgresql/data
+      - properties_postgres_temp:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 2s
@@ -79,4 +79,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_temp:
+  user_postgres_temp:
+  properties_postgres_temp:
