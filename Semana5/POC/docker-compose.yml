@@ -79,5 +79,5 @@ networks:
     driver: bridge
 
 volumes:
-  user_postgres_temp:
+  users_postgres_temp:
   properties_postgres_temp:
