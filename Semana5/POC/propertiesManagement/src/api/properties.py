@@ -16,6 +16,7 @@ def add_property():
         property_map = MapperPropertyDTOJson()
         py_dto = property_map.external_to_dto(property_dict)
         command = SaveProperty(property_size=py_dto.property_size,
+                               property_type=py_dto.property_type,
                                total_area_size=py_dto.total_area_size,
                                floors_number=py_dto.floors_number,
                                is_parking=py_dto.is_parking,

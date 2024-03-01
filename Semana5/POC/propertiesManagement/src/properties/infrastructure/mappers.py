@@ -1,4 +1,3 @@
-from Semana5.POC.propertiesManagement.src.seedwork.domain.entities import Entity
 from src.seedwork.domain.repositories import Mapper
 from src.properties.domain.entities import Property
 from .dto import Property as PropertyDTO
@@ -12,6 +11,7 @@ class PropertyMapper(Mapper):
         property_dto = PropertyDTO()
         property_dto.id = str(entity.id)
         property_dto.property_size = entity.property_size
+        property_dto.property_type = entity.property_type
         property_dto.total_area_size = entity.total_area_size
         property_dto.floors_number = entity.floors_number
         property_dto.is_parking = entity.is_parking
@@ -21,7 +21,7 @@ class PropertyMapper(Mapper):
         return property_dto
     
     def dto_to_entity(self, dto: PropertyDTO) -> PropertyDTO:
-        property = Property(id=dto.id, property_size=dto.property_size, total_area_size=dto.total_area_size, floors_number=dto.floors_number,
+        property = Property(id=dto.id, property_size=dto.property_size, property_type=dto.property_type, total_area_size=dto.total_area_size, floors_number=dto.floors_number,
                              is_parking=dto.is_parking, photos_registry=dto.photos_registry, ubication=dto.ubication, created_at=dto.createdAt)
         return property
 

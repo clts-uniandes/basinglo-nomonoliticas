@@ -9,7 +9,8 @@ class DomainPropertyHandler(Handler):
     def handle_property_created(event):
         print(event)
         command = SaveProperty(
-            property_size=event.property_size, 
+            property_size=event.property_size,
+            property_type=event.property_type,
             total_area_size=event.total_area_size,
             floors_number=event.floors_number,
             is_parking=event.is_parking,

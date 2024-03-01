@@ -13,6 +13,7 @@ class Property(db.Model):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     property_size = Column(Float, nullable=True)
+    property_type = Column(String, nullable=True)
     total_area_size = Column(Float, nullable=True)
     floors_number = Column(Integer, nullable=True)
     is_parking = Column(Boolean, nullable=True)

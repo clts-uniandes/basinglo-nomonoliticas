@@ -13,6 +13,7 @@ from src.properties.infrastructure.repositories import PropertyRepository
 @dataclass
 class SaveProperty(Command):
     property_size: float
+    property_type: str
     total_area_size: float
     floors_number: int
     is_parking: bool
@@ -23,6 +24,7 @@ class SavePropertyHandler(SavePropertyBaseHandler):
     def handle(self, command: SaveProperty):
         property_dto = PropertyAppDTO(
             property_size=command.property_size,
+            property_type=command.property_type,
             total_area_size=command.total_area_size,
             floors_number=command.floors_number,
             is_parking=command.is_parking,

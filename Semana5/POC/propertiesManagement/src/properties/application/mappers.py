@@ -7,6 +7,7 @@ class MapperPropertyDTOJson(AppMap):
     def external_to_dto(self, external: dict) -> PropertyAppDTO:
         property_dto = PropertyAppDTO(
             property_size= external['property_size'],
+            property_type= external['property_type'],
             total_area_size= external['total_area_size'],
             floors_number= external['floors_number'],
             is_parking= external['is_parking'],
@@ -26,11 +27,12 @@ class MapperProperty(RepoMap):
         return Property.__class__
     
     def entity_to_dto(self, entity: Property) -> PropertyAppDTO:
-        return PropertyAppDTO(entity.property_size,entity.total_area_size,entity.floors_number,entity.is_parking,entity.photos_registry,entity.ubication)
+        return PropertyAppDTO(entity.property_size,entity.property_type,entity.total_area_size,entity.floors_number,entity.is_parking,entity.photos_registry,entity.ubication)
     
     def dto_to_entity(self, dto: PropertyAppDTO) -> Property:
         property = Property()
         property.property_size = dto.property_size
+        property.property_type = dto.property_type
         property.total_area_size = dto.total_area_size
         property.floors_number = dto.floors_number
         property.is_parking = dto.is_parking
