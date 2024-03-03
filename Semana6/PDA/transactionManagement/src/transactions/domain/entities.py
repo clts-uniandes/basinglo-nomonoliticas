@@ -15,7 +15,7 @@ class Transaction(AgregationRoot):
     contract_final_date: date = field(default=None)
 
 
-    def create_property(self, transaction: Transaction):
+    def create_transaction(self, transaction: Transaction):
         self.dni_landlord = transaction.dni_landlord
         self.dni_tenant = transaction.dni_tenant
         self.monetary_value = transaction.monetary_value
