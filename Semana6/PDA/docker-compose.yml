@@ -16,10 +16,10 @@ services:
     networks:
       - transaction_net
     depends_on:
-      db_transaction:
+      db_transactions:
         condition: service_healthy
 
-  db_transaction:
+  db_transactions:
     image: postgres:12.4-alpine
     environment:
       - POSTGRES_USER=postgres
