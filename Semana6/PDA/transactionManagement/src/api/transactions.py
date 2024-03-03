@@ -7,9 +7,9 @@ from src.transactions.application.mappers import MapperTransactionDTOJson
 from src.seedwork.application.commands import exec_command
 from src.seedwork.domain.exceptions import DomainException
 
-properties_bp = crear_blueprint('transactions', '/transactions')
+transactions_bp = crear_blueprint('transactions', '/transactions')
 
-@properties_bp.route("add", methods=["POST"])
+@transactions_bp.route("add", methods=["POST"])
 def add_transaction():
     try:
         transaction_dict = request.json
