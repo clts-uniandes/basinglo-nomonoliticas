@@ -1,12 +1,9 @@
 import httpx
 import uuid
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, BackgroundTasks
 
 from .producers import Producer
 from . import utils
-
-#from config import settings
-
 
 class TransactionRepository:
     async def get_transactions(self, request: Request):
@@ -23,14 +20,13 @@ class TransactionRepository:
                 )
             return response.json()
     
-    async def create_transaction(self, request: Request):
+    async def create_transaction(self, request: Request, background_tasks: BackgroundTasks):
         payload = dict(
-            buyer_id = request.buyer_id,
-            seller_id = request.seller_id,
-            amount = request.amount,
-            realization_date = request.realization_date,
-            notes = request.notes,
-            fecha_creacion = utils.time_millis()
+            buyer_id = str(request.buyer_id),
+            seller_id = str(request.seller_id),
+            amount = int(request.amount),
+            realization_date = str(request.realization_date),
+            notes = str(request.notes)
         )
         print("Payload received: "+str(payload))
         command = dict(
@@ -45,6 +41,7 @@ class TransactionRepository:
         )
         print("To-be sent command: "+str(command))
         producer = Producer()
-        #producer.publish_message(command, "command-create-transaction, "public/default/new-transaction-command")
-        producer.publish_message(command, "transaction-event", "public/default/new-transaction-command")
+        #producer.produce_message(command, "transaction-event", "public/default/transaction-event")
+        background_tasks.add_task(producer.produce_message, command, "transaction-event", "public/default/transaction-event")
+        return {"msg" : "Registering transaction..."}
         

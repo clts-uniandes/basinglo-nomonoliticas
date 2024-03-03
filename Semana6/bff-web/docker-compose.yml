@@ -12,9 +12,7 @@ services:
     networks:
       - pulsar_net
     depends_on:
-      broker_pulsar:
-        condition:
-          service_started
+      - broker_pulsar
   broker_pulsar:
     image: apachepulsar/pulsar:3.2.0
     networks:
@@ -26,19 +24,19 @@ services:
     command: ["bin/pulsar", "standalone"]
     volumes:
       - mypulsar:/pulsar/data"
-  dashboard:
-    image: apachepulsar/pulsar-manager:v0.4.0
-    ports:
-      - "9527:9527"
-      - "7750:7750"
-    depends_on:
-      - broker_pulsar
-    links:
-      - broker_pulsar
-    networks:
-      - pulsar_net
-    environment:
-      SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
+  #dashboard:
+  #  image: apachepulsar/pulsar-manager:v0.4.0
+  #  ports:
+  #    - "9527:9527"
+  #    - "7750:7750"
+  #  depends_on:
+  #    - broker_pulsar
+  #  links:
+  #    - broker_pulsar
+  #  networks:
+  #    - pulsar_net
+  #  environment:
+  #    SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
 
 networks:
   pulsar_net:

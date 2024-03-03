@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, BackgroundTasks, Request
 from typing import TYPE_CHECKING
 from .schemas.schemas import Transaction, GenericResponse, TransactionsResponse
 
@@ -19,6 +19,6 @@ def initialize(get_transactions: "GetTransactions", create_transaction: "CreateT
         return await get_transactions.get_transactions(request)
 
     @router.post("", status_code=202)
-    async def create_new_transaction(request: Transaction):
-        return await create_transaction.create_transaction(request)
+    async def create_new_transaction(request: Transaction, background_tasks: BackgroundTasks):
+        return await create_transaction.create_transaction(request, background_tasks)
     

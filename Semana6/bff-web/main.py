@@ -20,8 +20,9 @@ Initializer(app).setup()
 async def startup():
     global tasks
     global events
-    #taskTransactions = asyncio.ensure_future(topic_subscribe("transaction-event","web-bff","public/default/transaction-event", events=events))
-    taskTransactions = asyncio.ensure_future(topic_subscribe("transaction-event","web-bff-sub","public/default/transaction-event", events=events))
+    taskTransactions = asyncio.ensure_future(topic_subscribe("transaction-event","web-bff","public/default/transaction-event", events=events))
+    #se podria volver env var los topicos y suscripciones
+    #taskTransactions = asyncio.ensure_future(topic_subscribe("transaction-event","web-bff-sub","apache/pulsar/transaction-event", events=events))
     tasks.append(taskTransactions)
 
 @app.on_event("shutdown")
