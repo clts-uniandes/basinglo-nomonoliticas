@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "05d67280-1d95-4922-8a73-9d9efbd4478c",
+		"name": "DDD-BFF_Web",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20333084"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"buyer_id\": \"5b70e892-3725-470f-add1-67c917b84159\",\r\n    \"seller_id\": \"bec182e1-3a34-4c56-bdfb-077495f541bf\",\r\n    \"amount\": 123,\r\n    \"realization_date\": \"2022-12-27 08:26:49.219717\",\r\n    \"notes\": \"Greetings\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8002/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8002",
+					"path": [
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"jorca\",\r\n    \"password\": \"jorcasca\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DEBUG - Get transactions sync",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stream response backend",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8002/event-stream",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8002",
+					"path": [
+						"event-stream"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PULSAR - ADD SCHEMA",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\": \"AVRO\",\r\n    \"schema\": \"{\\\"name\\\":\\\"Transaction\\\",\\\"type\\\":\\\"record\\\",\\\"fields\\\":[{\\\"name\\\":\\\"buyer_id\\\",\\\"type\\\":\\\"string\\\"},{\\\"name\\\":\\\"seller_id\\\",\\\"type\\\":\\\"string\\\"},{\\\"name\\\":\\\"amount\\\",\\\"type\\\":\\\"int\\\"},{\\\"name\\\":\\\"realization_date\\\",\\\"type\\\":\\\"string\\\"},{\\\"name\\\":\\\"notes\\\",\\\"type\\\":\\\"string\\\"}]}\",\r\n    \"properties\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/v2/schemas/public/default/transaction-event/schema",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"v2",
+						"schemas",
+						"public",
+						"default",
+						"transaction-event",
+						"schema"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PULSAR - GET TOPICS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/v2/persistent/public/default",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"v2",
+						"persistent",
+						"public",
+						"default"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PULSAR - GET SCHEMAS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/v2/schemas/public/default/transaction-event/schema",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"v2",
+						"schemas",
+						"public",
+						"default",
+						"transaction-event",
+						"schema"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
