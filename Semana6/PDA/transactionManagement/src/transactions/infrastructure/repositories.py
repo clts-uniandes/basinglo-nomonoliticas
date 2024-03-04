@@ -8,6 +8,9 @@ from .mappers import TransactionMapper
 from src.transactions.infrastructure.dispatchers import Dispatcher
 from src.seedwork.infraestructure import utils
 
+import threading
+import src.transactions.infrastructure.consumer as consumer
+
 class TransactionPostgresRepository(TransactionRepository):
 
     def __init__(self):
@@ -34,6 +37,7 @@ class TransactionPostgresRepository(TransactionRepository):
         )
         print("Llamamos el despachador desde la capa de infraestructura")
         #db.session.add(transaction_dto)
+        threading.Thread(target=consumer.suscribirse_a_comandos).start()
         command = Dispatcher()
         topic = f'{utils.topic()}'       
         print("El valor del topic es ", topic)
