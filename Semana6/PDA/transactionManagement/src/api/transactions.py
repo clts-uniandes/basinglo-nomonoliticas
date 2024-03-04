@@ -55,8 +55,7 @@ def add_transaction_asincronic():
 @transactions_bp.route("testPulsar", methods=["GET"])
 def check_pulsar():
     print("Probando la conexion a Pulsar ", {utils.broker_host()})
-    client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-    #client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')    
     producer = client.create_producer('topico_prueba_andes')
     for i in range(5):
         producer.send(('Hola pulsar ddd -%d' % i).encode('utf-8'))

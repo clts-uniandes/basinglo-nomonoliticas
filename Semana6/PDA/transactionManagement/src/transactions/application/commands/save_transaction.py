@@ -53,8 +53,7 @@ def exec_command_save_transaction(command: SaveTransaction):
 
 ## agregando asincronismo
 @dataclass
-class SaveTransactionAsincronic(Command):
-    print("Pasamos por el dataclass de SaveTransactionAsincronic")
+class SaveTransactionAsincronic(Command):    
     dni_landlord: str
     dni_tenant: str
     monetary_value: float
