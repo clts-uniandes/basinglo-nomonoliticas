@@ -13,11 +13,12 @@ def unix_time_millis(dt):
     return (dt - epoch).total_seconds() * 1000.0
 
 class Dispatcher:
-    def _publicar_mensaje(self, mensaje, topico, schema):
+    def _publicar_mensaje(self, mensaje, topico, schema_avro):
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        publicador = cliente.create_producer(topico, schema=AvroSchema(CommandCreateTransaction))
+        publicador = cliente.create_producer(topico, schema=schema_avro)
         publicador.send(mensaje)
         cliente.close()
+
 
     def publish_command(self, command, topic):        
         payload = CommandCreateTransactionPayload(            

@@ -6,6 +6,7 @@ from src.transactions.domain.factories import TransactionFactory
 from src.transactions.domain.entities import Transaction
 from .mappers import TransactionMapper
 from src.transactions.infrastructure.dispatchers import Dispatcher
+from src.seedwork.infraestructure import utils
 
 class TransactionPostgresRepository(TransactionRepository):
 
@@ -34,4 +35,6 @@ class TransactionPostgresRepository(TransactionRepository):
         print("Llamamos el despachador desde la capa de infraestructura")
         #db.session.add(transaction_dto)
         command = Dispatcher()
-        command.publish_command(transaction_dto, 'topico_prueba_andes')
+        topic = f'{utils.topic()}'       
+        print("El valor del topic es ", topic)
+        command.publish_command(transaction_dto, topic)
