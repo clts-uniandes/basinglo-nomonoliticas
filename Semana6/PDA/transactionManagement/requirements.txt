@@ -12,3 +12,5 @@ requests==2.26.0
 SQLAlchemy==1.4.15
 Werkzeug==2.2.2
 PyDispatcher==2.0.6
+pulsar-client==2.10.2
+pulsar-client[avro]==2.10.2

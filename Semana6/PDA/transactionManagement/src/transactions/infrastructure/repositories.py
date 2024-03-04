@@ -5,6 +5,7 @@ from src.transactions.domain.repositories import TransactionRepository
 from src.transactions.domain.factories import TransactionFactory
 from src.transactions.domain.entities import Transaction
 from .mappers import TransactionMapper
+from src.transactions.infrastructure.despachadores import Despachador
 
 class TransactionPostgresRepository(TransactionRepository):
 
@@ -25,3 +26,12 @@ class TransactionPostgresRepository(TransactionRepository):
             transaction, TransactionMapper()
         )
         db.session.add(transaction_dto)
+
+    def addAsincronic(self, transaction: Transaction):
+        transaction_dto = self._transaction_factory.create_object(
+            transaction, TransactionMapper()
+        )
+        print("Llamamos el despachador desde la capa de infraestructura")
+        #db.session.add(transaction_dto)
+        command = Despachador()
+        command.publicar_comando(transaction_dto, 'topico_prueba_andes')

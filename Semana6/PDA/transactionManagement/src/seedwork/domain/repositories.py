@@ -10,6 +10,9 @@ class Repository(ABC):
     @abstractmethod
     def add(self, entity: Entity):
         ...
+    @abstractmethod
+    def addAsincronic(self, entity: Entity):
+        ...
 
 class Mapper(ABC):
     @abstractmethod
