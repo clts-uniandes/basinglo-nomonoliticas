@@ -13,6 +13,7 @@ class MapperPropertyDTOJson(AppMap):
             is_parking= external['is_parking'],
             photos_registry= external['photos_registry'],
             ubication= external['ubication'],
+            owner_id= external['owner_id'],
         )
         return property_dto
     
@@ -38,5 +39,6 @@ class MapperProperty(RepoMap):
         property.is_parking = dto.is_parking
         property.photos_registry = dto.photos_registry
         property.ubication = dto.ubication
+        property.owner_id = dto.owner_id
         
         return property

@@ -13,6 +13,7 @@ class Property(AgregationRoot):
     is_parking: bool = field(default=None)
     photos_registry: str = field(default=None)
     ubication: str = field(default=None)
+    owner_id: str = field(default=None)
 
     def create_property(self, property: Property):
         self.property_size = property.property_size
@@ -22,6 +23,7 @@ class Property(AgregationRoot):
         self.is_parking = property.is_parking
         self.photos_registry = property.photos_registry
         self.ubication = property.ubication
+        self.owner_id = property.owner_id
 
         self.add_event(PropertyCreated(id_property=self.id, created_at=self.created_at))
 
@@ -33,5 +35,6 @@ class Property(AgregationRoot):
         self.is_parking = property.is_parking
         self.photos_registry = property.photos_registry
         self.ubication = property.ubication
+        self.owner_id = property.owner_id
 
         self.add_event(PropertyUpdated(id_property=self.id, created_at=self.created_at))

@@ -19,6 +19,7 @@ class Property(db.Model):
     is_parking = Column(Boolean, nullable=True)
     photos_registry = Column(String, nullable=True)
     ubication = Column(String, nullable=True)
+    owner_id = Column(String, nullable=True)
     createdAt = Column(DateTime, server_default=func.now())
 
 

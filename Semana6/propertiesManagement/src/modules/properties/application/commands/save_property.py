@@ -19,6 +19,7 @@ class SaveProperty(Command):
     is_parking: bool
     photos_registry: str
     ubication: str
+    owner_id: str
     
 class SavePropertyHandler(SavePropertyBaseHandler):
     def handle(self, command: SaveProperty):
@@ -29,7 +30,8 @@ class SavePropertyHandler(SavePropertyBaseHandler):
             floors_number=command.floors_number,
             is_parking=command.is_parking,
             photos_registry=command.photos_registry,
-            ubication=command.ubication
+            ubication=command.ubication,
+            owner_id=command.owner_id
         )
         
         # evaluate

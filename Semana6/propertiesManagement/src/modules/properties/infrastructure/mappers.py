@@ -17,11 +17,12 @@ class PropertyMapper(Mapper):
         property_dto.is_parking = entity.is_parking
         property_dto.photos_registry = entity.photos_registry
         property_dto.ubication = entity.ubication
+        property_dto.owner_id = entity.owner_id
         property_dto.createdAt = entity.created_at
         return property_dto
     
     def dto_to_entity(self, dto: PropertyDTO) -> PropertyDTO:
         property = Property(id=dto.id, property_size=dto.property_size, property_type=dto.property_type, total_area_size=dto.total_area_size, floors_number=dto.floors_number,
-                             is_parking=dto.is_parking, photos_registry=dto.photos_registry, ubication=dto.ubication, created_at=dto.createdAt)
+                             is_parking=dto.is_parking, photos_registry=dto.photos_registry, ubication=dto.ubication, owner_id=dto.owner_id, created_at=dto.createdAt)
         return property
 

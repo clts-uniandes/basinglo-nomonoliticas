@@ -16,5 +16,6 @@ class DomainPropertyHandler(Handler):
             is_parking=event.is_parking,
             photos_registry=event.photos_registry,
             ubication=event.ubication,
+            owner_id=event.owner_id,
         )
         exec_command(command)

@@ -10,3 +10,4 @@ class PropertyAppDTO(DTO):
     is_parking: bool
     photos_registry: str
     ubication: str
+    owner_id: str

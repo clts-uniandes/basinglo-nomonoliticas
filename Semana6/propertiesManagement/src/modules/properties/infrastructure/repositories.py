@@ -49,4 +49,6 @@ class PropertyPostgresRepository(PropertyRepository):
             existing_property_dto.photos_registry = property_dto.photos_registry
         if property_dto.ubication is not None:
             existing_property_dto.ubication = property_dto.ubication
+        if property_dto.owner_id is not None:
+            existing_property_dto.owner_id = property_dto.owner_id
         db.session.commit()
