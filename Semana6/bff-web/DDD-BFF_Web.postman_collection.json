@@ -32,7 +32,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"buyer_id\": \"5b70e892-3725-470f-add1-67c917b84159\",\r\n    \"seller_id\": \"bec182e1-3a34-4c56-bdfb-077495f541bf\",\r\n    \"amount\": 123,\r\n    \"realization_date\": \"2022-12-27 08:26:49.219717\",\r\n    \"notes\": \"Greetings\"\r\n}",
+					"raw": "{\r\n    \"buyer_id\": \"1234567\",\r\n    \"seller_id\": \"8901234\",\r\n    \"property_id\": \"cd077b2e-0e35-43f6-bc84-784ec426e852\",\r\n    \"amount\": 123,\r\n    \"realization_date\": \"2022-12-27 08:26:49.219717\",\r\n    \"notes\": \"Greetings\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -68,12 +68,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/auth/signin",
+					"raw": "http://localhost:8002/auth/signin",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
+					"port": "8002",
 					"path": [
 						"auth",
 						"signin"
@@ -127,7 +127,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"type\": \"AVRO\",\r\n    \"schema\": \"{\\\"name\\\":\\\"Transaction\\\",\\\"type\\\":\\\"record\\\",\\\"fields\\\":[{\\\"name\\\":\\\"buyer_id\\\",\\\"type\\\":\\\"string\\\"},{\\\"name\\\":\\\"seller_id\\\",\\\"type\\\":\\\"string\\\"},{\\\"name\\\":\\\"amount\\\",\\\"type\\\":\\\"int\\\"},{\\\"name\\\":\\\"realization_date\\\",\\\"type\\\":\\\"string\\\"},{\\\"name\\\":\\\"notes\\\",\\\"type\\\":\\\"string\\\"}]}\",\r\n    \"properties\": {}\r\n}",
+					"raw": "{\r\n    \"type\": \"AVRO\",\r\n    \"schema\": \"{ \\\"type\\\": \\\"record\\\", \\\"name\\\": \\\"CommandCreateTransaction\\\", \\\"fields\\\": [  {   \\\"name\\\": \\\"data\\\",   \\\"type\\\": [    \\\"null\\\",    {     \\\"type\\\": \\\"record\\\",     \\\"name\\\": \\\"CommandCreateTransactionPayload\\\",     \\\"fields\\\": [      {       \\\"name\\\": \\\"dni_landlord\\\",       \\\"type\\\": [        \\\"null\\\",        \\\"string\\\"       ]      },      {       \\\"name\\\": \\\"dni_tenant\\\",       \\\"type\\\": [        \\\"null\\\",        \\\"string\\\"       ]      },      {       \\\"name\\\": \\\"id_property\\\",       \\\"type\\\": [        \\\"null\\\",        \\\"string\\\"       ]      },      {       \\\"name\\\": \\\"monetary_value\\\",       \\\"type\\\": [        \\\"null\\\",        \\\"string\\\"       ]      },      {       \\\"name\\\": \\\"type_lease\\\",       \\\"type\\\": [        \\\"null\\\",        \\\"string\\\"       ]      },      {       \\\"name\\\": \\\"contract_initial_date\\\",       \\\"type\\\": [        \\\"null\\\",        \\\"string\\\"       ]      },      {       \\\"name\\\": \\\"contract_final_date\\\",       \\\"type\\\": [        \\\"null\\\",        \\\"string\\\"       ]      }     ]    }   ]  } ]}\",\r\n    \"properties\": {}\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -135,7 +135,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/admin/v2/schemas/public/default/transaction-event/schema",
+					"raw": "http://localhost:8080/admin/v2/schemas/public/default/transaction-topic/schema",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -147,7 +147,7 @@
 						"schemas",
 						"public",
 						"default",
-						"transaction-event",
+						"transaction-topic",
 						"schema"
 					]
 				}
@@ -183,7 +183,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/admin/v2/schemas/public/default/transaction-event/schema",
+					"raw": "http://localhost:8080/admin/v2/schemas/public/default/transaction-topic/schema",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -195,7 +195,7 @@
 						"schemas",
 						"public",
 						"default",
-						"transaction-event",
+						"transaction-topic",
 						"schema"
 					]
 				}
