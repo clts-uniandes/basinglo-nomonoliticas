@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  bff-web:
+    build: .
+    ports:
+      - "8002:8000"
+    environment:
+      - PULSAR_HOST=broker_pulsar
+      - TRANSACTIONS_MS=localhost:8001
+      - AUTH_MS=localhost:8002
+    networks:
+      - pulsar_net
+    depends_on:
+      broker_pulsar:
+        condition: service_healthy
+  broker_pulsar:
+    image: apachepulsar/pulsar:3.2.0
+    networks:
+      - pulsar_net
+    restart: unless-stopped
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: ["bin/pulsar", "standalone"]
+    volumes:
+      - mypulsar:/pulsar/data"
+    healthcheck:
+      test: curl --fail http://localhost:8080/admin/v2/brokers/health || exit 1
+      interval: 15s
+      timeout: 30s
+      retries: 2
+      start_period: 15s
+  #dashboard:
+  #  image: apachepulsar/pulsar-manager:v0.4.0
+  #  ports:
+  #    - "9527:9527"
+  #    - "7750:7750"
+  #  depends_on:
+  #    - broker_pulsar
+  #  links:
+  #    - broker_pulsar
+  #  networks:
+  #    - pulsar_net
+  #  environment:
+  #    SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
+
+networks:
+  pulsar_net:
+    driver: bridge
+
+volumes:
+  mypulsar:

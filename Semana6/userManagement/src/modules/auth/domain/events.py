@@ -5,8 +5,11 @@ from dataclasses import dataclass
 from src.seedwork.domain.events import DomainEvent
 from datetime import datetime
 
+class CredentialEvent(DomainEvent):
+    ...
+
 @dataclass
-class CredentialCreated(DomainEvent):
+class CredentialCreated(CredentialEvent):
     id_credential: uuid.UUID = None
     created_at: datetime = None
     email: str = None
