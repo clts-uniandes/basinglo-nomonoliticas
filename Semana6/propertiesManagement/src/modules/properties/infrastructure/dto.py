@@ -21,5 +21,3 @@ class Property(db.Model):
     ubication = Column(String, nullable=True)
     owner_id = Column(String, nullable=True)
     createdAt = Column(DateTime, server_default=func.now())
-
-

@@ -4,11 +4,11 @@ import logging
 import traceback
 
 from src.seedwork.infraestructure import utils
-from src.transactions.infrastructure.schema.v1.commands import CommandCreateTransaction
+from src.modules.properties.infrastructure.schema.v1.commands import CommandCreateTransaction
 from src.modules.properties.application.commands.update_property import UpdateProperty
 from src.seedwork.application.commands import exec_command
 
-def susbcribe_to_commands(app=None):
+def susbcribe_to_commands():
     client = None
     try:
         client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')

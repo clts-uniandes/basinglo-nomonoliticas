@@ -2,11 +2,10 @@ from flask import Flask
 from os import environ as env
 
 
-def start_consumer(app):
-    import src.modules.properties.infrastructure.consumers as properties
+def start_consumer():
     import threading
-    threading.Thread(target=properties.susbcribe_to_commands, args=[app]).start()
-
+    import src.modules.properties.infrastructure.consumers as properties
+    threading.Thread(target=properties.susbcribe_to_commands).start()
 
 def import_alchemy_models():
     import src.modules.properties.infrastructure.dto
@@ -37,8 +36,7 @@ def config_app():
     from src.config.db import db
     import_alchemy_models()
     register_handlers()
-    start_consumer(flask_app)
-    
+    start_consumer()
 
     with flask_app.app_context():
         db.create_all()

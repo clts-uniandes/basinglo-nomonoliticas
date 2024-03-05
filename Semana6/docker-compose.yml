@@ -110,6 +110,8 @@ networks:
     driver: bridge
   property_net:
     driver: bridge
+  pulsar:
+    driver: bridge
 
 volumes:
   users_postgres_temp:
