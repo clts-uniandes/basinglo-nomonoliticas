@@ -1,0 +1,67 @@
+{
+    "type": "record",
+    "name": "CommandCreateTransaction",
+    "fields": [
+        {
+            "name": "data",
+            "type": [
+                "null",
+                {
+                    "type": "record",
+                    "name": "CommandCreateTransactionPayload",
+                    "fields": [
+                        {
+                            "name": "dni_landlord",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "name": "dni_tenant",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "name": "id_property",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "name": "monetary_value",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "name": "type_lease",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "name": "contract_initial_date",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        {
+                            "name": "contract_final_date",
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

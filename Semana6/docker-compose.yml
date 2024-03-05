@@ -4,8 +4,14 @@ services:
 
   users:
     build: ./userManagement
-    env_file:
-      - ./userManagement/.env
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db_users
+      DB_PORT: 5432
+      DB_NAME: users
+      BROKER_PATH: pulsar
+      PYTHONUNBUFFERED: 1
     ports:
       - "3000:8000"
     deploy:
@@ -15,6 +21,7 @@ services:
         max_attempts: 3
     networks:
       - user_net
+      - pulsar
     depends_on:
       db_users:
         condition: service_healthy
@@ -71,11 +78,39 @@ services:
       interval: 2s
       timeout: 5s
       retries: 5
+  
+  notifications:
+    build: ./notifications
+    environment:
+      BROKER_PATH: pulsar
+      PYTHONUNBUFFERED: 1
+    networks:
+      - pulsar
+    depends_on:
+      pulsar:
+        condition: service_started
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 6
+
+  pulsar:
+    image: apachepulsar/pulsar:3.2.0
+    networks:
+      - pulsar
+    restart: on-failure
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: ["bin/pulsar", "standalone"]
 
 networks:
   user_net:
     driver: bridge
   property_net:
+    driver: bridge
+  pulsar:
     driver: bridge
 
 volumes:
