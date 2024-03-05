@@ -7,8 +7,13 @@ services:
       - "8002:8000"
     environment:
       - PULSAR_HOST=broker_pulsar
+      - TRANSACTION_COMMAND_TOPIC=transaction-topic
+      - TRANSACTION_EVENT_TOPIC=transaction-topic # mientras se habilita topico de eventos de micro transacciones; autoescucha con mismo consume y produce
+      - USER_COMMAND_TOPIC=user-command
+      - USER_EVENT_TOPIC=user-command # mientras se habilita topico de eventos de micro transacciones; autoescucha
+      - BFF_SUB_NAME=bff-web
       - TRANSACTIONS_MS=localhost:8001
-      - AUTH_MS=localhost:8002
+      - USERS_MS=localhost:8002
     networks:
       - pulsar_net
     depends_on:
@@ -27,10 +32,11 @@ services:
       - mypulsar:/pulsar/data"
     healthcheck:
       test: curl --fail http://localhost:8080/admin/v2/brokers/health || exit 1
-      interval: 15s
+      interval: 10s
       timeout: 30s
       retries: 2
-      start_period: 15s
+      start_period: 10s
+  # Consumo elevado de RAM, no recomendado
   #dashboard:
   #  image: apachepulsar/pulsar-manager:v0.4.0
   #  ports:
