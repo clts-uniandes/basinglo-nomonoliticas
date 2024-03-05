@@ -1,9 +1,16 @@
 import httpx
+import os
 import uuid
+from datetime import datetime
 from fastapi import HTTPException, Request, BackgroundTasks
 
 from .producers import Producer
 from . import utils
+
+PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
+NAMESPACE_TENANT = "NAMESPACE_TENANT"
+
+TRANSACTION_COMMAND_TOPIC = "TRANSACTION_COMMAND_TOPIC"
 
 class TransactionRepository:
     async def get_transactions(self, request: Request):
@@ -22,26 +29,31 @@ class TransactionRepository:
     
     async def create_transaction(self, request: Request, background_tasks: BackgroundTasks):
         payload = dict(
-            buyer_id = str(request.buyer_id),
-            seller_id = str(request.seller_id),
-            amount = int(request.amount),
-            realization_date = str(request.realization_date),
-            notes = str(request.notes)
+            dni_landlord = str(request.seller_id),
+            dni_tenant = str(request.buyer_id),
+            id_property = str(request.property_id),
+            monetary_value = str(request.amount),
+            type_lease = "SELL",
+            contract_initial_date="",
+            contract_final_date=datetime.now().isoformat()
         )
-        print("Payload received: "+str(payload))
+        print("Payload received: "+str(request))
         command = dict(
-            id = str(uuid.uuid4()),
-            time=utils.time_millis(),
-            specversion = "v1",
-            type = "NewTransactionCommand",
-            ingestion=utils.time_millis(),
-            datacontenttype="AVRO",
-            service_name = "PDA BFF Web edition",
+            #id = str(uuid.uuid4()),
+            #time=utils.time_millis(),
+            #specversion = "v1",
+            #type = "NewTransactionCommand",
+            #ingestion=utils.time_millis(),
+            #datacontenttype="AVRO",
+            #service_name = "PDA BFF Web edition",
             data = payload
         )
         print("To-be sent command: "+str(command))
+        pulsar_namespace=os.getenv(PULSAR_NAMESPACE, default="public")
+        namespace_tenant=os.getenv(NAMESPACE_TENANT, default="default")
+        transaction_command_topic=os.getenv(TRANSACTION_COMMAND_TOPIC, default="")
         producer = Producer()
         #producer.produce_message(command, "transaction-event", "public/default/transaction-event")
-        background_tasks.add_task(producer.produce_message, command, "transaction-event", "public/default/transaction-event")
+        background_tasks.add_task(producer.produce_message, command, transaction_command_topic, pulsar_namespace+"/"+namespace_tenant+"/"+transaction_command_topic)
         return {"msg" : "Registering transaction..."}
         
