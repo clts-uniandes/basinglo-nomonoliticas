@@ -22,6 +22,7 @@ services:
     environment:
       - BROKER_HOST=broker_pulsar
       - TOPIC=topic_transaction
+      - TOPIC_CONSUMER=topic_transaction
 
   db_transactions:
     image: postgres:12.4-alpine

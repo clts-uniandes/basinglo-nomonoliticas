@@ -10,3 +10,6 @@ def broker_host():
 def topic():
     return os.getenv('TOPIC', default="topic_transaction")
 
+def topic_consumer():
+    return os.getenv('TOPIC_CONSUMER', default="topic_consumer_transaction")
+
