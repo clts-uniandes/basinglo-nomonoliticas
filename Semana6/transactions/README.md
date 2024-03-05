@@ -8,7 +8,7 @@
   - [Carpeta src](#carpeta-src)
   	- [Carpeta api](#carpeta-api)
     - [Carpeta config](#carpeta-config)
-  	- [Carpeta modules](#carpeta-modules)
+  	- [Carpeta transactions](#carpeta-transactions)
   	- [Carpeta seedwork](#carpeta-seedwork)
 - [Ejecutar un microservicio](#ejecutar-un-microservicio)
   - [Makefile](#makefile)
@@ -39,21 +39,20 @@ Cada microservicio utiliza Python y Flask para ejecutar el servidor. En general,
 Esta carpeta contiene el código y la lógica necesarios para declarar y ejecutar la API del microservicio, así como para la comunicación con la base de datos. Hay cuatro carpetas principales:
 - `/api`: Define las rutas y los servicios del dominio, así como algunos archivos de soporte.
 - `/config`: Esta carpeta contiene los archivos para la configuración de `db` y `uow`.
-- `/modules`: Contiene los modulos definidos para el dominio de gestión de usuarios. Estos son auth y users.
+- `/transactions`: Contiene los modulos definidos para el dominio de gestión de Transacciones.
 - `/seedwork`: Contiene clases base que se usan como base para los dominios definidos.
 
 #### Carpeta api
 - `utils/decorators.py`: Contiene decoradores: **handle_exceptions**, que maneja excepciones específicas generando respuestas HTTP adecuadas junto con mensajes de error personalizados, y **db_session**, que garantiza la creación y cierre apropiados de sesiones de base de datos alrededor de la función decorada para mantener la integridad de las transacciones y evitar fugas de recursos. **is_authenticated** que valida si la petición contiene un token de autenticación.
 - `utils/exceptions.py`: Define excepciones personalizadas utilizadas para manejar casos de error específicos en la aplicación. Cada excepción proporciona un mensaje descriptivo y hereda de la clase base Exception. Estas excepciones se utilizan para representar escenarios como parámetros inválidos, recursos inexistentes, falta de autorización, entre otros, facilitando la gestión uniforme de errores en la API.
-- `auth.py` y `users.py`: Define las rutas de la API utilizando Flask. Cada ruta tiene asignado un método HTTP y una función asociada que maneja la solicitud.
+- `transactions.py`: Define las rutas de la API utilizando Flask. Cada ruta tiene asignado un método HTTP y una función asociada que maneja la solicitud.
 
 #### Carpeta config
 - `db.py`: Proporciona una instancia para el acceso a las capacidades de la db.
 - `uow.py`: Proporciona una abstracción de la unidad de trabajo.
 
-#### Carpeta modules
-- `/auth`: Proporciona las capas de aplicación, dominio e infraestructura para el modulo de autenticación.
-- `/users`: Proporciona las capas de aplicación, dominio e infraestructura para el modulo de users.
+#### Carpeta transactions
+- `/`: Proporciona las capas de aplicación, dominio e infraestructura para el modulo de transacciones.
 
 #### Carpeta seedwork
 - Proporciona las capas de aplicación, dominio, infraestructura y presentación que contienen las bases que se usan para los dominios definidos.
@@ -73,6 +72,8 @@ El servidor Flask y las pruebas unitarias utilizan variables de entorno para con
 - DB_PORT: Puerto de la base de datos Postgres
 - DB_NAME: Nombre de la base de datos Postgres
 - PYTHONUNBUFFERED: Habilita el debugging de python
+- TOPIC: Nombre del topico al cual se va a conectar
+- BROKER_HOST: Nombre del contenedor o servidor que contiene Apache Pulsar
 
 Estas variables de entorno deben especificarse en `.env` de cada microservicio.
 
@@ -107,20 +108,20 @@ Importe la siguiente colección:
 ```
 {
 	"info": {
-		"_postman_id": "b32f1f41-e581-4d87-9c7c-aa705f5d203f",
-		"name": "DDD_without_cookies",
+		"_postman_id": "91aa6331-6442-4764-a467-1db15562556a",
+		"name": "Transactions_DDD",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "6293622"
+		"_exporter_id": "12463581"
 	},
 	"item": [
 		{
-			"name": "Register user",
+			"name": "http://localhost:3002/transactions/add",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"jorcasca\",\r\n    \"password\": \"jorcasca\",\r\n    \"email\": \"jorcasca@gmail.com\",\r\n    \"dni\": \"1107097248\",\r\n    \"fullName\": \"Jorge Eliecer Castaño Valencia\",\r\n    \"phoneNumber\": \"3166186895\"\r\n}",
+					"raw": "{\r\n    \"dni_landlord\":\"1040789546\", \r\n    \"dni_tenant\": \"34567921\",\r\n    \"monetary_value\": 1250000.9,\r\n    \"type_lease\": \"Arriendo Mensual\",\r\n    \"contract_initial_date\": \"20210923\",\r\n    \"contract_final_date\": \"2024-09-23\"   \r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -128,38 +129,28 @@ Importe la siguiente colección:
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/auth/signup",
+					"raw": "http://localhost:3002/transactions/add",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "3002",
 					"path": [
-						"auth",
-						"signup"
+						"transactions",
+						"add"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Authenticate user",
+			"name": "http://localhost:3002/transactions/addCommand",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{USER_TOKEN}}",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"jorcasca\",\n    \"password\": \"jorcasca\"\n}",
+					"raw": "{\r\n    \"dni_landlord\":\"1040789546\", \r\n    \"dni_tenant\": \"34567921\",\r\n    \"monetary_value\": 1250000.9,\r\n    \"type_lease\": \"Arriendo Mensual\",\r\n    \"contract_initial_date\": \"20210923\",\r\n    \"contract_final_date\": \"2024-09-23\"   \r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -167,54 +158,19 @@ Importe la siguiente colección:
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/auth/signin",
+					"raw": "http://localhost:3002/transactions/addCommand",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "3002",
 					"path": [
-						"auth",
-						"signin"
+						"transactions",
+						"addCommand"
 					]
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "Save personal info",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id_credential\": \"05fca023-4710-4497-86d9-78f60db8b5dd\",\r\n    \"email\": \"jorcasca2@gmail.com\",\r\n    \"dni\": \"1234567890\",\r\n    \"fullName\": \"Jorge 2 \",\r\n    \"phoneNumber\": \"1234567890\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3000/users/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"users",
-						"register"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"variable": [
-		{
-			"key": "USER_TOKEN",
-			"value": "{{USER_TOKEN}}"
 		}
 	]
 }
