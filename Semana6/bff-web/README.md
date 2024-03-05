@@ -70,3 +70,5 @@ Listar tópicos (no particionados):
 Tenga en cuenta que por defecto Pulsar puede eliminar tópicos no particionados para ahorro de espacio.
 
 Más información en https://pulsar.apache.org/docs/3.1.x/admin-api-topics/
+
+No olvide que los schemas se están archivando en la carpeta `pulsar\schemas\avro` en la raiz de la semana.
