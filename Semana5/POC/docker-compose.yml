@@ -30,7 +30,42 @@ services:
     ports:
       - 5433:5432
     volumes:
-      - postgres_temp:/var/lib/postgresql/data
+      - users_postgres_temp:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  properties:
+    build: ./propertiesManagement
+    env_file:
+      - ./propertiesManagement/.env
+    ports:
+      - "3001:8000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - property_net
+    depends_on:
+      db_properties:
+        condition: service_healthy
+
+  db_properties:
+    image: postgres:12.4-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=properties
+    networks:
+      - property_net
+    ports:
+      - 5434:5432
+    volumes:
+      - properties_postgres_temp:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 2s
@@ -40,6 +75,9 @@ services:
 networks:
   user_net:
     driver: bridge
+  property_net:
+    driver: bridge
 
 volumes:
-  postgres_temp:
+  users_postgres_temp:
+  properties_postgres_temp:
