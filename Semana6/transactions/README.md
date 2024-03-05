@@ -26,7 +26,7 @@
     - Las instrucciones pueden variar según el sistema operativo. Consulta [para Windows](https://gnuwin32.sourceforge.net/packages/make.htm). Si estás utilizando un sistema operativo basado en Unix, recomendamos usar [Brew](https://wiki.postgresql.org/wiki/Homebrew) con el commando `brew install make`.
 
 ## Estructura de cada microservicio
-Cada microservicio utiliza Python y Flask para ejecutar el servidor. En general, dentro de cada uno de ellos hay una carpetas principal: `src`, así como algunos archivos de soporte. Para que comprenda lo anterior, dirijase a /userManagement.
+Cada microservicio utiliza Python y Flask para ejecutar el servidor. En general, dentro de cada uno de ellos hay una carpetas principal: `src`, así como algunos archivos de soporte. Para que comprenda lo anterior, dirijase a /transactionManagement.
 
 #### Archivos de soporte
 - `.env`: Archivo de plantilla Env utilizado para definir variables de entorno. Consulte la sección  **Variables de entorno**.
@@ -58,7 +58,7 @@ Esta carpeta contiene el código y la lógica necesarios para declarar y ejecuta
 - Proporciona las capas de aplicación, dominio, infraestructura y presentación que contienen las bases que se usan para los dominios definidos.
 
 ## Ejecutar un microservicio
-En cada microservicio se encontrará la documentación de despliegue en la sesión **Run with Makefile**, que incluye instrucciones específicas para ser ejecutado. En este orden de ideas, en la ruta userManagement encontrará un README.md donde se indica que la ejecución del docker se puede hacer a partir del comando `make run`.
+En cada microservicio se encontrará la documentación de despliegue en la sesión **Run with Makefile**, que incluye instrucciones específicas para ser ejecutado. En este orden de ideas, en la ruta transactionManagement encontrará un README.md donde se indica que la ejecución del docker se puede hacer a partir del comando `make run`.
 
 ### Makefile
 El Makefile proporciona comandos convenientes para ejecutar el microservicio de forma fácil y rápida.
