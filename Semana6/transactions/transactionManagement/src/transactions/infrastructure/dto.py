@@ -14,6 +14,7 @@ class Transaction(db.Model):
     id = Column(UUID(as_uuid=True), primary_key=True)
     dni_landlord = Column(String, nullable=True)
     dni_tenant = Column(String, nullable=True)
+    id_property = Column(String, nullable=True)
     monetary_value = Column(Float, nullable=True)
     type_lease = Column(String, nullable=True)
     contract_initial_date = Column(DateTime, nullable=True)

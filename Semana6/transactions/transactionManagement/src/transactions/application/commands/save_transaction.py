@@ -15,6 +15,7 @@ from src.transactions.infrastructure.repositories import TransactionRepository
 class SaveTransaction(Command):
     dni_landlord: str
     dni_tenant: str
+    id_property: str
     monetary_value: float
     type_lease: str
     contract_initial_date: date
@@ -25,6 +26,7 @@ class SaveTransactionHandler(SaveTransactionBaseHandler):
         transaction_dto = TransactionAppDTO(
             dni_landlord=command.dni_landlord,
             dni_tenant=command.dni_tenant,
+            id_property=command.id_property,
             monetary_value=command.monetary_value,
             type_lease=command.type_lease,
             contract_initial_date=command.contract_initial_date,
@@ -56,6 +58,7 @@ def exec_command_save_transaction(command: SaveTransaction):
 class SaveTransactionAsincronic(Command):    
     dni_landlord: str
     dni_tenant: str
+    id_property: str
     monetary_value: float
     type_lease: str
     contract_initial_date: date
@@ -67,6 +70,7 @@ class SaveTransactionAsincronicHandler(SaveTransactionBaseHandler):
         transaction_dto = TransactionAppDTO(
             dni_landlord=command.dni_landlord,
             dni_tenant=command.dni_tenant,
+            id_property=command.id_property,
             monetary_value=command.monetary_value,
             type_lease=command.type_lease,
             contract_initial_date=command.contract_initial_date,

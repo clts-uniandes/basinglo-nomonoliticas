@@ -19,6 +19,7 @@ def add_transaction():
         py_dto = transaction_map.external_to_dto(transaction_dict)
         command = SaveTransaction(dni_landlord=py_dto.dni_landlord,
                                dni_tenant=py_dto.dni_tenant,
+                               id_property=py_dto.id_property,
                                monetary_value=py_dto.monetary_value,
                                type_lease=py_dto.type_lease,
                                contract_initial_date=py_dto.contract_initial_date,
@@ -39,6 +40,7 @@ def add_transaction_asincronic():
         py_dto = transaction_map.external_to_dto(transaction_dict)
         command = SaveTransactionAsincronic(dni_landlord=py_dto.dni_landlord,
                                dni_tenant=py_dto.dni_tenant,
+                               id_property=py_dto.id_property,
                                monetary_value=py_dto.monetary_value,
                                type_lease=py_dto.type_lease,
                                contract_initial_date=py_dto.contract_initial_date,

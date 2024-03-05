@@ -9,6 +9,7 @@ from src.seedwork.domain.entities import AgregationRoot
 class Transaction(AgregationRoot):
     dni_landlord: str = field(default=None)
     dni_tenant: str = field(default=None)
+    id_property: str = field(default=None)
     monetary_value: float = field(default=None)
     type_lease: str = field(default=None)
     contract_initial_date: date = field(default=None)
@@ -18,6 +19,7 @@ class Transaction(AgregationRoot):
     def create_transaction(self, transaction: Transaction):
         self.dni_landlord = transaction.dni_landlord
         self.dni_tenant = transaction.dni_tenant
+        self.id_property = transaction.id_property
         self.monetary_value = transaction.monetary_value
         self.type_lease = transaction.type_lease
         self.contract_initial_date = transaction.contract_initial_date
