@@ -7,42 +7,13 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:3002/transactions/add",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"dni_landlord\":\"1040789546\", \r\n    \"dni_tenant\": \"34567921\",\r\n    \"monetary_value\": 1250000.9,\r\n    \"type_lease\": \"Arriendo Mensual\",\r\n    \"contract_initial_date\": \"20210923\",\r\n    \"contract_final_date\": \"2024-09-23\"   \r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3002/transactions/add",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3002",
-					"path": [
-						"transactions",
-						"add"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "http://localhost:3002/transactions/addCommand",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"dni_landlord\":\"1040789546\", \r\n    \"dni_tenant\": \"34567921\",\r\n    \"monetary_value\": 1250000.9,\r\n    \"type_lease\": \"Arriendo Mensual\",\r\n    \"contract_initial_date\": \"20210923\",\r\n    \"contract_final_date\": \"2024-09-23\"   \r\n}",
+					"raw": "{\r\n    \"dni_landlord\":\"1040789546\", \r\n    \"dni_tenant\": \"34567921\",\r\n    \"id_property\": \"3456789012\",\r\n    \"monetary_value\": 1250000.9,\r\n    \"type_lease\": \"Arriendo Mensual\",\r\n    \"contract_initial_date\": \"20210923\",\r\n    \"contract_final_date\": \"2024-09-23\"   \r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
