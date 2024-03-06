@@ -167,3 +167,5 @@ cython_debug/
 /.idea/modules.xml
 /.idea/misc.xml
 /.idea/git_toolbox_prj.xml
+
+.DS_Store
