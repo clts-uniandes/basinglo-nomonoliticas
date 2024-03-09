@@ -25,8 +25,7 @@ class Dispatcher:
             dni_landlord = str(command.dni_landlord),
             dni_tenant = str(command.dni_tenant),
             id_property = str(command.id_property),
-            monetary_value = str(command.monetary_value),
-            type_lease = str(command.type_lease),
+            monetary_value = str(command.monetary_value),            
             contract_initial_date = str(command.contract_initial_date),
             contract_final_date = (command.contract_final_date)            
         )
