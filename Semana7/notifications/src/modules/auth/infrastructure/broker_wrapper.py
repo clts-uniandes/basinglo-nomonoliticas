@@ -11,9 +11,10 @@ class BrokerWrapper:
         self.schema = schema
 
     def connect(self):
-        self.client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        self.client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
+        full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
         self.consumer = self.client.subscribe(
-            topic=self.topic,
+            topic=full_topic,
             consumer_type=pulsar.ConsumerType.Shared,
             subscription_name=self.subscription_name,
             schema=AvroSchema(self.schema)

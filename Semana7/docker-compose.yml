@@ -10,7 +10,10 @@ services:
       DB_HOST: db_users
       DB_PORT: 5432
       DB_NAME: users
-      BROKER_PATH: pulsar
+      BROKER_PATH: pulsar://broker_pulsar:6650
+      BROKER_TOKEN: putatokenhere
+      BROKER_TENANT: basinglo
+      BROKER_NAMESPACE: default
       PYTHONUNBUFFERED: 1
     ports:
       - "3000:8000"
@@ -82,7 +85,10 @@ services:
   notifications:
     build: ./notifications
     environment:
-      BROKER_PATH: pulsar
+      BROKER_PATH: pulsar://broker_pulsar:6650
+      BROKER_TOKEN: putatokenhere
+      BROKER_TENANT: basinglo
+      BROKER_NAMESPACE: default
       PYTHONUNBUFFERED: 1
     networks:
       - pulsar

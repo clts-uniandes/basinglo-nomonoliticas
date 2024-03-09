@@ -8,8 +8,8 @@ from initializer import Initializer
 from app.config.config import BaseConfig
 from app.modules.transaction.infrastructure.consumers import topic_subscribe
 
-PULSAR_TENANT = "PULSAR_TENANT"
 PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
+NAMESPACE_TENANT = "NAMESPACE_TENANT"
 
 USER_EVENT_TOPIC = "USER_EVENT_TOPIC"
 TRANSACTION_EVENT_TOPIC = "TRANSACTION_EVENT_TOPIC"
@@ -24,29 +24,21 @@ events = list()
 
 Initializer(app).setup()
 
-
 @app.on_event("startup")
 async def startup():
     global tasks
     global events
-
-    pulsar_tenant = os.getenv(PULSAR_TENANT, default="public")
-    pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default")
-    # user_event_topic=os.getenv(USER_EVENT_TOPIC, default="")
-    transaction_event_topic = os.getenv(TRANSACTION_EVENT_TOPIC, default="")
-    subscription_name = os.getenv(BFF_SUB_NAME, default="")
+    
+    pulsar_namespace=os.getenv(PULSAR_NAMESPACE, default="public")
+    namespace_tenant=os.getenv(NAMESPACE_TENANT, default="default")
+    #user_event_topic=os.getenv(USER_EVENT_TOPIC, default="")
+    transaction_event_topic=os.getenv(TRANSACTION_EVENT_TOPIC, default="")
+    subscription_name=os.getenv(BFF_SUB_NAME, default="")
     print("adding futures")
-    # taskUser = asyncio.ensure_future(topic_subscribe(pulsar_tenant+"/"+pulsar_namespace+"/"+transaction_event_topic,subscription_name, events=events))
-    taskTransaction = asyncio.ensure_future(
-        topic_subscribe(
-            pulsar_tenant + "/" + pulsar_namespace + "/" + transaction_event_topic,
-            subscription_name,
-            events=events,
-        )
-    )
-    # tasks.append(taskUser)
+    #taskUser = asyncio.ensure_future(topic_subscribe(user_event_topic,subscription_name,pulsar_namespace+"/"+namespace_tenant+"/"+user_event_topic, events=events))
+    taskTransaction = asyncio.ensure_future(topic_subscribe(transaction_event_topic,subscription_name,pulsar_namespace+"/"+namespace_tenant+"/"+transaction_event_topic, events=events))
+    #tasks.append(taskUser)
     tasks.append(taskTransaction)
-
 
 @app.on_event("shutdown")
 def shutdown_event():
@@ -54,13 +46,11 @@ def shutdown_event():
     for task in tasks:
         task.cancel()
 
-
-@app.get("/event-stream")
+@app.get('/event-stream')
 async def stream_events(request: Request):
     def new_event():
         global events
-        return {"data": events.pop(), "event": "NewEvent"}
-
+        return {'data': events.pop(), 'event': 'NewEvent'}
     async def get_events():
         global events
         while True:
@@ -69,5 +59,4 @@ async def stream_events(request: Request):
             if len(events) > 0:
                 yield new_event()
             await asyncio.sleep(0.1)
-
     return EventSourceResponse(get_events())

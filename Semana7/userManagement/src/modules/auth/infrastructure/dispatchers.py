@@ -11,8 +11,9 @@ class Dispatcher:
         self.mapper = EventsCredentialMapper()
 
     def _publish_menssage(self, message, topic, schema):
-        client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        publicador = client.create_producer(topic=topic, schema=schema)
+        client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
+        full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${topic}'
+        publicador = client.create_producer(topic=full_topic, schema=schema)
         publicador.send(message)
         client.close()
 
