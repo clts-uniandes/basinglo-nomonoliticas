@@ -6,7 +6,11 @@ services:
     ports:
       - "8002:8000"
     environment:
-      - PULSAR_HOST=broker_pulsar
+      - BROKER_URL=pulsar://broker_pulsar:6650
+      - API_URL=http://broker_pulsar:8080
+      - PULSAR_TOKEN=putatokenhere
+      - PULSAR_TENANT=public
+      - PULSAR_NAMESPACE=default
       - TRANSACTION_COMMAND_TOPIC=transaction-topic
       - TRANSACTION_EVENT_TOPIC=transaction-topic # mientras se habilita topico de eventos de micro transacciones; autoescucha con mismo consume y produce
       - USER_COMMAND_TOPIC=user-command
