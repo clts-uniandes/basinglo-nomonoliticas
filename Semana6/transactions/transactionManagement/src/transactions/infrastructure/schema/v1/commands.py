@@ -6,7 +6,8 @@ class CommandCreateTransactionPayload(CommandIntegration):
     dni_landlord = String()
     dni_tenant = String()
     id_property = String()
-    monetary_value = String()    
+    #monetary_value = String()
+    monetary_value = Float()    
     contract_initial_date = String()
     contract_final_date = String()
     

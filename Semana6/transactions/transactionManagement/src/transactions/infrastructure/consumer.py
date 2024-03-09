@@ -18,7 +18,17 @@ def suscribirse_a_comandos():
         while True:
             mensaje = consumidor.receive()
             print(f'Comando recibido: {mensaje.value().data}')
-
+            getValor = mensaje.value()
+            getProperties = mensaje.properties()
+            schema_version = mensaje.schema_version()
+            print(f'resultado metodo value: ', getValor)
+            print(f'El tipo de dato de value es : ', type(getValor))
+            print(f'resultado metodo properties: ', getProperties)
+            print(f'El tipo de dato de value es : ', type(getProperties))
+            print(f'resultado metodo schema_version: ', schema_version)
+            print(f'El tipo de dato de schema_version es : ', type(schema_version))
+            print(f'El valor del id del arrendatario es ', getValor.data.dni_landlord)
+            print(f'El valor de la compra es  ', getValor.data.monetary_value)
             consumidor.acknowledge(mensaje)     
             
         cliente.close()
