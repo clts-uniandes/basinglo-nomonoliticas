@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from src.seedwork.infraestructure.schema.v1.commands import CommandIntegration
+from src.seedwork.infraestructure.schema.v1.commands import CommandIntegration, ejecutar_commando 
 from src.seedwork.infraestructure.schema.v1.events import EventIntegracion
 from dataclasses import dataclass
-from .comandos import ejecutar_commando
 import uuid
 import datetime
 

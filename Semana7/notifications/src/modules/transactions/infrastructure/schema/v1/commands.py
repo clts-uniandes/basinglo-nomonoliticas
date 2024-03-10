@@ -8,7 +8,6 @@ class CommandCreateTransactionPayload(CommandIntegration):
     dni_tenant = String()
     id_property = String()
     monetary_value = String()
-    type_lease = String()
     contract_initial_date = String()
     contract_final_date = String()
     
@@ -20,7 +19,7 @@ class CommandCreateTransaction(CommandIntegration):
 
 class CommandCreateTransactionHandler(ComandoHandler):
     def handle(self, comando: CommandIntegration):
-        broker = BrokerWrapper(topic='event-create-transaction', subscription_name='sub-transaction', schema=CommandCreateTransaction)
+        broker = BrokerWrapper(topic='create-transaction-topic', subscription_name='sub-transaction', schema=CommandCreateTransaction)
         broker.publish(message=comando)
 
 @comando.register(CommandCreateTransaction)
@@ -35,7 +34,7 @@ class CommandRemoveTransaction(CommandIntegration):
 
 class CommandRemoveTransactionHandler(ComandoHandler):
     def handle(self, comando: CommandIntegration):
-        broker = BrokerWrapper(topic='event-remove-transaction', subscription_name='sub-transaction', schema=CommandRemoveTransaction)
+        broker = BrokerWrapper(topic='remove-transaction-topic', subscription_name='sub-transaction', schema=CommandRemoveTransaction)
         broker.publish(message=comando)
 
 @comando.register(CommandRemoveTransaction)

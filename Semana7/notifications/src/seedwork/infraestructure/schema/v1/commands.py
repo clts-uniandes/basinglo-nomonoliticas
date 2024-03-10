@@ -1,8 +1,8 @@
-from .messages import Message
+from .events import EventIntegracion
 from functools import singledispatch
 from abc import ABC, abstractmethod
 
-class CommandIntegration(Message):
+class CommandIntegration(EventIntegracion):
     ...
 
 class ComandoHandler(ABC):

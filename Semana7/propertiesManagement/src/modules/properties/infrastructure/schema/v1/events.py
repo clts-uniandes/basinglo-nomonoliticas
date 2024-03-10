@@ -14,3 +14,6 @@ class PropertyUpdatedPayload(Record):
 
 class EventPropertyUpdated(EventIntegracion):
     data = PropertyUpdatedPayload()
+
+class EventPropertyUpdatedFailed(EventIntegracion):
+    data = PropertyUpdatedPayload()

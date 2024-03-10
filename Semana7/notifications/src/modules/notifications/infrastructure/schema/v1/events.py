@@ -1,16 +1,16 @@
 from pulsar.schema import *
 from src.seedwork.infraestructure.schema.v1.events import EventIntegracion
 
-class TransactionCreatedPayload(Record):
+class NotificationCreatedPayload(Record):
     dni_landlord = String()
     dni_tenant = String()
     id_property = String()
-    type_lease = String()
+    monetary_value = Float()
     contract_initial_date = Long()
     contract_final_date = Long
 
-class EventTransactionCreated(EventIntegracion):
-    data = TransactionCreatedPayload()
+class EventNotificationCreated(EventIntegracion):
+    data = NotificationCreatedPayload()
 
-class EventTransactionFailed(EventIntegracion):
-    data = TransactionCreatedPayload()
+class EventNotificationFailed(EventIntegracion):
+    data = NotificationCreatedPayload()

@@ -5,10 +5,10 @@ from src.modules.transactions.infrastructure.schema.v1.commands import CommandCr
 from src.modules.sagas.application.managers.saga_transaction import ManagerTransaction
 
 def subscribe_to_events():
-    transactionCreatedSubscription = BrokerWrapper(topic='event-created-transaction', subscription_name='sub-transaction', schema=EventTransactionCreated)
+    transactionCreatedSubscription = BrokerWrapper(topic='created-transaction-topic', subscription_name='sub-transaction', schema=EventTransactionCreated)
     transactionCreatedSubscription.connect()
 
-    transactionFailedSubscription = BrokerWrapper(topic='event-failed-transaction', subscription_name='sub-transaction', schema=EventTransactionFailed)
+    transactionFailedSubscription = BrokerWrapper(topic='failed-transaction-topic', subscription_name='sub-transaction', schema=EventTransactionFailed)
     transactionFailedSubscription.connect()
     
     managerTransaction = ManagerTransaction()

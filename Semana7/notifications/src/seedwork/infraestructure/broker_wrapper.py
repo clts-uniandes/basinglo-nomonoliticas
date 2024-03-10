@@ -16,6 +16,7 @@ class BrokerWrapper:
         # full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
 
         self.consumer = self.client.subscribe(
+            # topic=full_topic,
             topic=self.topic,
             consumer_type=pulsar.ConsumerType.Shared,
             subscription_name=self.subscription_name,
