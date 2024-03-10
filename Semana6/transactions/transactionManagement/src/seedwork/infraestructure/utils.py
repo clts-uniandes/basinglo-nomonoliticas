@@ -1,5 +1,6 @@
 import time
 import os
+import datetime
 
 def time_millis():
     return int(time.time() * 1000)
@@ -12,4 +13,7 @@ def topic():
 
 def topic_consumer():
     return os.getenv('TOPIC_CONSUMER', default="topic_transaction_consumer")
+
+def millis_a_datetime(millis):
+    return datetime.datetime.fromtimestamp(millis/1000.0)
 

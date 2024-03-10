@@ -40,9 +40,9 @@ class SaveTransactionHandler(SaveTransactionBaseHandler):
         repository = self.repo_factory.create_object(
             TransactionRepository.__class__
         )
-        
+        print("Creando el register batch en UWO")
         UnitOfWorkPort.register_batch(repository.add, transaction)
-        
+        print("haciendo commit  en UWO")
         UnitOfWorkPort.commit()
         
         

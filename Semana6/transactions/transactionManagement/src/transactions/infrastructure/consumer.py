@@ -1,17 +1,16 @@
+from src.transactions.infrastructure.projections import ProjectionReserveConsumer
 import pulsar,_pulsar  
 from pulsar.schema import *
 import uuid
 import time
 import logging
 import traceback
-from src.transactions.application.commands.save_transaction import SaveTransaction
-from src.seedwork.application.commands import exec_command
-
 from src.transactions.infrastructure.schema.v1.commands import CommandCreateTransactionPayload, CommandCreateTransaction
 from src.seedwork.infraestructure import utils
-import requests
+from src.seedwork.infraestructure.projections import execute_projection
 
-def suscribirse_a_comandos():
+
+def suscribirse_a_comandos(app=None):
     cliente = None    
     try:
         print(f'Vamos a conectarnos al topico {utils.topic_consumer()}')
@@ -33,26 +32,16 @@ def suscribirse_a_comandos():
             print(f'El tipo de dato de schema_version es : ', type(schema_version))
             #print(f'El valor del id del arrendatario es ', getValor.data.dni_landlord)
             #print(f'El valor de la compra es  ', getValor.data.monetary_value)
-            '''
-            command = SaveTransaction(dni_landlord=getValor.data.dni_landlord,
-                               dni_tenant=getValor.data.dni_tenant,
-                               id_property=getValor.data.id_property,
-                               monetary_value=getValor.data.monetary_value,                               
-                               contract_initial_date=getValor.data.contract_initial_date,
-                               contract_final_date=getValor.data.contract_final_date)
-            exec_command(command)
-            '''
-            data = {"dni_landlord":getValor.data.dni_landlord,
-                    "dni_tenant":getValor.data.dni_tenant,
-                    "id_property":getValor.data.id_property,
-                    "monetary_value":getValor.data.monetary_value,
-                    "contract_initial_date":getValor.data.contract_initial_date,
-                    "contract_final_date":getValor.data.contract_final_date
-                    }
-            #url = "http://localhost:8000/transactions/add"
-            url = "http://localhost:8000/transactions/addCommand"
-            response = requests.post(url, json=data)
-            print("Status Code", response.status_code)
+            print("vamos a ejecutar la proyeccion")
+            execute_projection(ProjectionReserveConsumer(getValor.data.dni_landlord,
+                                                         getValor.data.dni_tenant,
+                                                         getValor.data.id_property,
+                                                         getValor.data.monetary_value,
+                                                         getValor.data.contract_initial_date,
+                                                         getValor.data.contract_final_date
+                                                         ),app = app)            
+            
+            print("Vamos a reconocer el mensaje despues de la proyeccion")
             consumidor.acknowledge(mensaje)
             print("Fin de la solicitud del cliente")
         cliente.close()
