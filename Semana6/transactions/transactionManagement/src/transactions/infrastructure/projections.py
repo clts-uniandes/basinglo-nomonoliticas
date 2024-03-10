@@ -47,7 +47,7 @@ class ProjectionReserveConsumer(ProjectionReserve):
         repository = self.repo_factory.create_object(
             TransactionRepository.__class__
         )
-        repository.add(transaction)
+        repository.addAsincronic(transaction)
 
         db.session.commit()
 
