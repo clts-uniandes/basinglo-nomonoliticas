@@ -2,7 +2,6 @@ from http import HTTPStatus
 from flask import request
 
 from ..seedwork.presentation.api import crear_blueprint
-from ..api.utils.decorators import handle_exceptions
 from ..modules.auth.application.commands.register_credential import RegisterCredential
 from ..modules.auth.application.queries.authenticate_user import AuthenticateUser
 from ..modules.auth.application.mappers import MapperAuthDTOJson

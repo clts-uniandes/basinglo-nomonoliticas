@@ -33,7 +33,6 @@ class SavePersonalInfoHandler(SavePersonalInformationBaseHandler):
         UnitOfWorkPort.register_batch(repository.add, personal_information)
         #UnitOfWorkPort.savepoint()
         UnitOfWorkPort.commit()
-        print("savepersonal committed")
 
 
 @command.register(SavePersonalInfo)

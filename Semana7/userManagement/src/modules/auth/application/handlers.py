@@ -8,5 +8,5 @@ class DomainCredentialHandler(Handler):
     def handle_credential_created(event):
         print('================ CREDENTIAL CREATED ===========')
         print(event)
-        dispatcher = Dispatcher()
-        dispatcher.publish_menssage(event=event, topic='event-credential')
+        #dispatcher = Dispatcher()
+        #dispatcher.publish_event(event=event, topic='event-credential')
