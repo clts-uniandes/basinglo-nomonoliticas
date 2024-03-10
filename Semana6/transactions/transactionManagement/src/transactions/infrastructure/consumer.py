@@ -49,7 +49,8 @@ def suscribirse_a_comandos():
                     "contract_initial_date":getValor.data.contract_initial_date,
                     "contract_final_date":getValor.data.contract_final_date
                     }
-            url = "http://localhost:8000/transactions/add"
+            #url = "http://localhost:8000/transactions/add"
+            url = "http://localhost:8000/transactions/addCommand"
             response = requests.post(url, json=data)
             print("Status Code", response.status_code)
             consumidor.acknowledge(mensaje)

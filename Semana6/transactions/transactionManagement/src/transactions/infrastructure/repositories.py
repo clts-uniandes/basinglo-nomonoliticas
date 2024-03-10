@@ -36,7 +36,7 @@ class TransactionPostgresRepository(TransactionRepository):
             transaction, TransactionMapper()
         )
         print("Llamamos el despachador desde la capa de infraestructura")
-        #db.session.add(transaction_dto)
+        db.session.add(transaction_dto)
         #threading.Thread(target=consumer.suscribirse_a_comandos).start()
         command = Dispatcher()
         topic = f'{utils.topic()}'       
