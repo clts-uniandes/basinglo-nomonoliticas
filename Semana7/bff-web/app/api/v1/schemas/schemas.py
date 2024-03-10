@@ -35,5 +35,5 @@ class TransactionsResponse(BaseModel):
     #total_pages: int
 
 class LoginResponse(BaseModel):
-    token: str
+    msg: str
     

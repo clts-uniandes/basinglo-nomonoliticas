@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import HTTPException, Request, BackgroundTasks
 
 from app.seedwork.infrastructure import utils
-from config import settings
+from app.config.settings import settings
 from .producers import Producer
 
 PULSAR_TENANT = "PULSAR_TENANT"

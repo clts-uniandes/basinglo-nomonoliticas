@@ -1,5 +1,5 @@
+from fastapi import APIRouter, BackgroundTasks, Request
 from typing import TYPE_CHECKING
-from fastapi import APIRouter
 from .schemas.schemas import LoginResponse, Login, NewUser
 
 
@@ -21,7 +21,7 @@ def initialize(get_access: "GetAccess", register_user: "RegisterUser"):
         return await get_access.get_access(request)
 
     @router.post("/signup")
-    async def signup(request: NewUser):
-        return await register_user.register_user(request)
+    async def signup(request: NewUser, background_tasks: BackgroundTasks):
+        return await register_user.create_transaction(request, background_tasks)
 
     return {"signin": signin, "signup": signup}

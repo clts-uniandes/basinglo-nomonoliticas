@@ -11,7 +11,7 @@ from app.modules.transaction.infrastructure.consumers import topic_subscribe
 PULSAR_TENANT = "PULSAR_TENANT"
 PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
 
-USER_EVENT_TOPIC = "USER_EVENT_TOPIC"
+USERS_EVENT_TOPIC = "USERS_EVENT_TOPIC"
 TRANSACTION_EVENT_TOPIC = "TRANSACTION_EVENT_TOPIC"
 BFF_SUB_NAME = "BFF_SUB_NAME"
 
@@ -32,7 +32,7 @@ async def startup():
 
     pulsar_tenant = os.getenv(PULSAR_TENANT, default="public")
     pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default")
-    users_event_topic=os.getenv(USER_EVENT_TOPIC, default="unset")
+    users_event_topic=os.getenv(USERS_EVENT_TOPIC, default="unset")
     
     subscription_name = os.getenv(BFF_SUB_NAME, default="")
     print("adding futures")

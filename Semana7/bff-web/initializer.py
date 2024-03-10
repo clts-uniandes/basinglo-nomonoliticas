@@ -7,7 +7,7 @@ from app.api import main_page as main_page_api
 
 from app.modules.user.application.queries.get_access import GetAccess
 from app.modules.user.application.commands.register_user import RegisterUser
-from app.modules.user.infrastructure.repositories import UserRepository
+from app.modules.user.infrastructure.repositories import UsersRepository
 from app.modules.transaction.application.queries.get_transaction import GetTransactions
 from app.modules.transaction.application.commands.create_transaction import (
     CreateTransaction,
@@ -24,7 +24,8 @@ class Initializer:
         self.init_health_module()
         self.init_main_page_module()
         self.init_user_module()
-        self.init_transaction_module()
+        #self.init_transaction_module()
+        #self.init_notification_saga_module()
         
     def init_health_module(self):
         get_health = GetHealth()
@@ -38,7 +39,7 @@ class Initializer:
         self.app.include_router(main_page_api.router)
 
     def init_user_module(self):
-        repository = UserRepository()
+        repository = UsersRepository()
         get_access = GetAccess(repository)
         register_user = RegisterUser(repository)
         user_api.initialize(get_access, register_user)

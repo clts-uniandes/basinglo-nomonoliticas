@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import HTTPException, Request, BackgroundTasks
 
 from app.seedwork.infrastructure import utils
-from config import settings
+from app.config.settings import settings
 from .producers import Producer
 
 PULSAR_TENANT = "PULSAR_TENANT"
@@ -15,13 +15,19 @@ USERS_COMMAND_TOPIC = "USERS_COMMAND_TOPIC"
 class UsersRepository:
     async def login(self, request: Request):
         async with httpx.AsyncClient() as client:
-            body = await request.json()
-            uri = utils.build_request_uri(settings.users_ms, "/auth/signin")
+            body = {
+                "username" : str(request.username),
+                "password" :str(request.password)
+            }
+            uri = utils.build_request_uri(settings.users_ms, "auth/signin")
             #uri = build_request_uri("localhost:8000", "/auth/signin")
             print(f"Sending {body} to {uri}")
             response = await client.post(uri, json=body, timeout=60)
 
-            if 400 <= response.status_code < 600: 
+            if response.status_code == 500:
+                return response.json()
+            elif 400 <= response.status_code < 600: 
+                print(response.json())
                 error_detail = response.json().get("detail", response.text)
                 raise HTTPException(
                     status_code=response.status_code, detail=error_detail

@@ -17,7 +17,7 @@ services:
       - NOTIFICATION_SAGA_EVENT_TOPIC=personal-info-created-topic # might not be needed
       # armar otros listeners para los pasos de la saga
       - BFF_SUB_NAME=bff-web
-      - USERS_MS=localhost:8002
+      - USERS_MS=http://localhost:8002
     networks:
       - pulsar_net
     depends_on:
