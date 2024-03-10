@@ -4,12 +4,15 @@ import uuid
 import time
 import logging
 import traceback
+from src.transactions.application.commands.save_transaction import SaveTransaction
+from src.seedwork.application.commands import exec_command
 
 from src.transactions.infrastructure.schema.v1.commands import CommandCreateTransactionPayload, CommandCreateTransaction
 from src.seedwork.infraestructure import utils
+import requests
 
 def suscribirse_a_comandos():
-    cliente = None
+    cliente = None    
     try:
         print(f'Vamos a conectarnos al topico {utils.topic_consumer()}')
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
@@ -30,7 +33,27 @@ def suscribirse_a_comandos():
             print(f'El tipo de dato de schema_version es : ', type(schema_version))
             #print(f'El valor del id del arrendatario es ', getValor.data.dni_landlord)
             #print(f'El valor de la compra es  ', getValor.data.monetary_value)
+            '''
+            command = SaveTransaction(dni_landlord=getValor.data.dni_landlord,
+                               dni_tenant=getValor.data.dni_tenant,
+                               id_property=getValor.data.id_property,
+                               monetary_value=getValor.data.monetary_value,                               
+                               contract_initial_date=getValor.data.contract_initial_date,
+                               contract_final_date=getValor.data.contract_final_date)
+            exec_command(command)
+            '''
+            data = {"dni_landlord":getValor.data.dni_landlord,
+                    "dni_tenant":getValor.data.dni_tenant,
+                    "id_property":getValor.data.id_property,
+                    "monetary_value":getValor.data.monetary_value,
+                    "contract_initial_date":getValor.data.contract_initial_date,
+                    "contract_final_date":getValor.data.contract_final_date
+                    }
+            url = "http://localhost:8000/transactions/add"
+            response = requests.post(url, json=data)
+            print("Status Code", response.status_code)
             consumidor.acknowledge(mensaje)
+            print("Fin de la solicitud del cliente")
         cliente.close()
     except:
         logging.error('ERROR: Suscribiendose al tópico de comandos!')
