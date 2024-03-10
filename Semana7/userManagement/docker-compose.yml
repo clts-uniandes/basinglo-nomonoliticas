@@ -4,29 +4,51 @@ services:
   users:
     build: .
     ports:
-      - "8002:8000"
+      - "8001:8000"
     environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db_users
+      - DB_PORT=5432
+      - DB_NAME=users
+      - PYTHONUNBUFFERED=1
       - BROKER_URL=pulsar://broker_pulsar:6650
       - API_URL=http://broker_pulsar:8080
       - PULSAR_TOKEN=putatokenhere
       - PULSAR_TENANT=public
       - PULSAR_NAMESPACE=default
-      - TRANSACTION_COMMAND_TOPIC=transaction-topic
-      - TRANSACTION_EVENT_TOPIC=transaction-topic # mientras se habilita topico de eventos de micro transacciones; autoescucha con mismo consume y produce
-      - USER_COMMAND_TOPIC=user-command
-      - USER_EVENT_TOPIC=user-command # mientras se habilita topico de eventos de micro transacciones; autoescucha
-      - BFF_SUB_NAME=bff-web
-      - TRANSACTIONS_MS=localhost:8001
-      - USERS_MS=localhost:8002
+      - AUTH_COMMAND_TOPIC=register-credential-topic
+      - AUTH_COMMAND_SUB_NAME=register-credential-sub
+      - USER_EVENT_TOPIC=personal-info-created-topic
+      - USERS_EVENT_SUB_NAME=personal-info-created-sub  # not essential
     networks:
-      - pulsar_net
+      - user_net
     depends_on:
       broker_pulsar:
         condition: service_healthy
+      db_users:
+        condition: service_started
+  db_users:
+    image: postgres:12.4-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=users
+    networks:
+      - user_net
+    ports:
+      - 5433:5432
+    volumes:
+      - users_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
   broker_pulsar:
     image: apachepulsar/pulsar:3.2.0
     networks:
-      - pulsar_net
+      - user_net
     restart: unless-stopped
     ports:
       - "6650:6650"
@@ -40,24 +62,11 @@ services:
       timeout: 30s
       retries: 2
       start_period: 10s
-  # Consumo elevado de RAM, no recomendado
-  #dashboard:
-  #  image: apachepulsar/pulsar-manager:v0.4.0
-  #  ports:
-  #    - "9527:9527"
-  #    - "7750:7750"
-  #  depends_on:
-  #    - broker_pulsar
-  #  links:
-  #    - broker_pulsar
-  #  networks:
-  #    - pulsar_net
-  #  environment:
-  #    SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
 
 networks:
-  pulsar_net:
+  user_net:
     driver: bridge
 
 volumes:
   mypulsar:
+  users_postgres:

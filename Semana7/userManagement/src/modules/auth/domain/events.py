@@ -1,9 +1,9 @@
 from __future__ import annotations
 import uuid
-
 from dataclasses import dataclass
-from src.seedwork.domain.events import DomainEvent
 from datetime import datetime
+
+from src.seedwork.domain.events import DomainEvent
 
 class CredentialEvent(DomainEvent):
     ...
@@ -16,3 +16,8 @@ class CredentialCreated(CredentialEvent):
     dni: str = None
     fullName: str = None
     phoneNumber: str = None
+
+@dataclass
+class CredentialNotCreated(DomainEvent):
+    username: str = None
+    email: str = None
