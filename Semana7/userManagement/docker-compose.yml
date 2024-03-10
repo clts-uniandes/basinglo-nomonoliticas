@@ -19,7 +19,7 @@ services:
       - PULSAR_NAMESPACE=default
       - AUTH_COMMAND_TOPIC=register-credential-topic
       - AUTH_COMMAND_SUB_NAME=register-credential-sub
-      - USER_EVENT_TOPIC=personal-info-created-topic
+      - USERS_EVENT_TOPIC=personal-info-created-topic
       - USERS_EVENT_SUB_NAME=personal-info-created-sub  # not essential
     networks:
       - user_net
