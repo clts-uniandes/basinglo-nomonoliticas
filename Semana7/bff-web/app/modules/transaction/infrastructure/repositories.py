@@ -4,8 +4,9 @@ import uuid
 from datetime import datetime
 from fastapi import HTTPException, Request, BackgroundTasks
 
+from app.seedwork.infrastructure import utils
+from config import settings
 from .producers import Producer
-from . import utils
 
 PULSAR_TENANT = "PULSAR_TENANT"
 PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
@@ -16,8 +17,8 @@ TRANSACTION_COMMAND_TOPIC = "TRANSACTION_COMMAND_TOPIC"
 class TransactionRepository:
     async def get_transactions(self, request: Request):
         async with httpx.AsyncClient() as client:
-            # uri = build_request_uri(settings.transactions_ms, "transactions")
-            uri = utils.build_request_uri("localhost:8000", "transactions")
+            uri = utils.build_request_uri(settings.transactions_ms, "transactions")
+            # uri = utils.build_request_uri("localhost:8000", "transactions")
             print(f"Sending {request.query_params} to {uri}")
             response = await client.get(uri, params=request.query_params, timeout=60)
 

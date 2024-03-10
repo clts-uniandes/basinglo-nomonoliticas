@@ -32,20 +32,20 @@ async def startup():
 
     pulsar_tenant = os.getenv(PULSAR_TENANT, default="public")
     pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default")
-    # user_event_topic=os.getenv(USER_EVENT_TOPIC, default="")
-    transaction_event_topic = os.getenv(TRANSACTION_EVENT_TOPIC, default="")
+    users_event_topic=os.getenv(USER_EVENT_TOPIC, default="unset")
+    
     subscription_name = os.getenv(BFF_SUB_NAME, default="")
     print("adding futures")
-    # taskUser = asyncio.ensure_future(topic_subscribe(pulsar_tenant+"/"+pulsar_namespace+"/"+transaction_event_topic,subscription_name, events=events))
-    taskTransaction = asyncio.ensure_future(
+    # taskNotification = ...
+    taskUsers = asyncio.ensure_future(
         topic_subscribe(
-            pulsar_tenant + "/" + pulsar_namespace + "/" + transaction_event_topic,
+            pulsar_tenant + "/" + pulsar_namespace + "/" + users_event_topic,
             subscription_name,
             events=events,
         )
     )
     # tasks.append(taskUser)
-    tasks.append(taskTransaction)
+    tasks.append(taskUsers)
 
 
 @app.on_event("shutdown")

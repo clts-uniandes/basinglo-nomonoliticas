@@ -2,7 +2,6 @@ import aiopulsar
 import logging
 import pulsar
 import traceback
-
 from app.seedwork.infrastructure import utils
 
 
