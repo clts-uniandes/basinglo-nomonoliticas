@@ -1,6 +1,6 @@
 from src.modules.auth.infrastructure.schema.v1.events import UserCreatedEvent
 from src.seedwork.infraestructure import utils
-from src.modules.auth.infrastructure.broker_wrapper import BrokerWrapper
+from src.seedwork.infraestructure.broker_wrapper import BrokerWrapper
 
 def subscribe_to_events():
     UserCreatedEventSubscription = BrokerWrapper(topic='event-credential', subscription_name='sub-notificacion-auth', schema=UserCreatedEvent)

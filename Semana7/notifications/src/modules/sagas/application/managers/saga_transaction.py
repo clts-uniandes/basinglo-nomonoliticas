@@ -1,5 +1,6 @@
 from src.modules.sagas.seedwork.application.sagas import CoordinadorOrquestacion, Fin, Inicio, Transaccion
-from src.modules.sagas.seedwork.dominio.eventos import EventoDominio
+from src.seedwork.infraestructure.schema.v1.events import EventIntegracion
+from src.seedwork.infraestructure.schema.v1.commands import CommandIntegration
 from src.modules.transactions.infrastructure.schema.v1.commands import CommandCreateTransaction, CommandRemoveTransaction
 from src.modules.transactions.infrastructure.schema.v1.events import EventTransactionCreated, EventTransactionFailed
 from src.modules.properties.infrastructure.schema.v1.commands import CommandUpdateProperty, CommandUpdatePropertyPayload
@@ -26,7 +27,7 @@ class ManagerTransaction(CoordinadorOrquestacion):
         # Probablemente usted podría usar un repositorio para ello
         ...
 
-    def construir_comando(self, evento: EventoDominio, tipo_comando: type):
+    def construir_comando(self, evento: EventIntegracion, tipo_comando: type):
         # TODO Transforma un evento en la entrada de un comando
         # Por ejemplo si el evento que llega es ReservaCreada y el tipo_comando es PagarReserva
         # Debemos usar los atributos de ReservaCreada para crear el comando PagarReserva
@@ -35,16 +36,22 @@ class ManagerTransaction(CoordinadorOrquestacion):
                 owner_id=evento.dni_landlord,
                 id=evento.id_property,
             )
-            return CommandUpdateProperty(data=payload)
+            return CommandUpdateProperty(data=payload)            
         else:
             raise ValueError("event and commmand type not supported")
 
+    # TODO Agregue un Listener/Handler para que se puedan redireccionar eventos de dominio
+    def oir_mensaje(mensaje):
+        if isinstance(mensaje, EventIntegracion):
+            manager = ManagerTransaction()
+            manager.procesar_evento(mensaje)
+        else:
+            raise NotImplementedError("El mensaje no es evento de Dominio")
 
-
-# TODO Agregue un Listener/Handler para que se puedan redireccionar eventos de dominio
-def oir_mensaje(mensaje):
-    if isinstance(mensaje, EventoDominio):
-        manager = ManagerTransaction()
-        manager.procesar_evento(mensaje)
-    else:
-        raise NotImplementedError("El mensaje no es evento de Dominio")
+    # TODO Agregue un Listener/Handler para que se puedan redireccionar eventos de dominio
+    def oir_mensaje_command(mensaje):
+        if isinstance(mensaje, CommandIntegration):
+            manager = ManagerTransaction()
+            manager.procesar_evento(mensaje)
+        else:
+            raise NotImplementedError("El mensaje no es evento de Dominio")

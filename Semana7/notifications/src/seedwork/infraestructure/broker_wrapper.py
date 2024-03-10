@@ -19,6 +19,15 @@ class BrokerWrapper:
             schema=AvroSchema(self.schema)
         )
 
+    def publish(self, message):
+        client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        publicador = client.create_producer(
+            topic=self.topic,
+            schema=AvroSchema(self.schema)
+        )
+        publicador.send(message)
+        client.close()
+
     def receive_message(self):
         msg = self.consumer.receive()
         return msg

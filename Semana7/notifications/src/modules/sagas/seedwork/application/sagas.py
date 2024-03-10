@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from aeroalpes.seedwork.aplicacion.comandos import Comando
-from aeroalpes.seedwork.dominio.eventos import EventoDominio
+from src.seedwork.infraestructure.schema.v1.commands import CommandIntegration
+from src.seedwork.infraestructure.schema.v1.events import EventIntegracion
 from dataclasses import dataclass
 from .comandos import ejecutar_commando
 import uuid
@@ -14,10 +14,10 @@ class CoordinadorSaga(ABC):
         ...
 
     @abstractmethod
-    def construir_comando(self, evento: EventoDominio, tipo_comando: type) -> Comando:
+    def construir_comando(self, evento: EventIntegracion, tipo_comando: type) -> CommandIntegration:
         ...
 
-    def publicar_comando(self,evento: EventoDominio, tipo_comando: type):
+    def publicar_comando(self,evento: EventIntegracion, tipo_comando: type):
         comando = construir_comando(evento, tipo_comando)
         ejecutar_commando(comando)
 
@@ -26,7 +26,7 @@ class CoordinadorSaga(ABC):
         ...
     
     @abstractmethod
-    def procesar_evento(self, evento: EventoDominio):
+    def procesar_evento(self, evento: EventIntegracion):
         ...
 
     @abstractmethod
@@ -53,10 +53,10 @@ class Fin(Paso):
 @dataclass
 class Transaccion(Paso):
     
-    comando: Comando
-    evento: EventoDominio
-    error: EventoDominio
-    compensacion: Comando
+    comando: CommandIntegration
+    evento: EventIntegracion
+    error: EventIntegracion
+    compensacion: CommandIntegration
     exitosa: bool
 
 class CoordinadorCoreografia(CoordinadorSaga, ABC):
@@ -69,7 +69,7 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
     pasos: list[Paso]
     index: int
     
-    def obtener_paso_dado_un_evento(self, evento: EventoDominio):
+    def obtener_paso_dado_un_evento(self, evento: EventIntegracion):
         for i, paso in enumerate(pasos):
             if not isinstance(paso, Transaccion):
                 continue
@@ -81,7 +81,7 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
     def es_ultima_transaccion(self, index):
         return len(self.pasos) - 1
 
-    def procesar_evento(self, evento: EventoDominio):
+    def procesar_evento(self, evento: EventIntegracion):
         paso, index = self.obtener_paso_dado_un_evento(evento)
         if es_ultima_transaccion(index) and not isinstance(evento, paso.error):
             self.terminar()
@@ -89,5 +89,3 @@ class CoordinadorOrquestacion(CoordinadorSaga, ABC):
             self.publicar_comando(evento, self.pasos[index-1].compensacion)
         elif isinstance(evento, paso.evento):
             self.publicar_comando(evento, self.pasos[index+1].compensacion)
-
-

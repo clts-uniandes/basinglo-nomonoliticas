@@ -1,5 +1,9 @@
 import threading
 import src.modules.auth.infrastructure.consumers as auth
+import src.modules.notifications.infrastructure.consumers as notifications
+import src.modules.transactions.infrastructure.consumers as transactions
+import src.modules.properties.infrastructure.consumers as properties
+
 from flask import Flask
 from os import environ as env
 
@@ -10,10 +14,13 @@ def config_app():
     flask_app.config["DEBUG"] = True
     from src.api.notifications import notification_bp
     flask_app.register_blueprint(notification_bp)
+
     auth.subscribe_to_events()
-    
-    from src.modules.sagas.application.managers.saga_transaction import ManagerTransaction
-    ManagerTransaction()
+    notifications.subscribe_to_commands()
+    transactions.subscribe_to_events()
+    transactions.subscribe_to_commands()
+    properties.subscribe_to_events()
+    properties.subscribe_to_commands()
     
     return flask_app
 

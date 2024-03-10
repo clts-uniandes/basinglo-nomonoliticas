@@ -1,6 +1,7 @@
 from pulsar.schema import *
-from dataclasses import dataclass, field
-from src.seedwork.infraestructure.schema.v1.commands import (CommandIntegration)
+from src.seedwork.infraestructure.broker_wrapper import BrokerWrapper
+from src.seedwork.infraestructure.schema.v1.commands import CommandIntegration, ComandoHandler
+from src.seedwork.infraestructure.schema.v1.commands import ejecutar_commando as comando
 
 class CommandCreateTransactionPayload(CommandIntegration):
     dni_landlord = String()
@@ -11,10 +12,33 @@ class CommandCreateTransactionPayload(CommandIntegration):
     contract_initial_date = String()
     contract_final_date = String()
     
+# --------------------------------------------------------------------------------------------------------
+
 
 class CommandCreateTransaction(CommandIntegration):
     data = CommandCreateTransactionPayload()
 
+class CommandCreateTransactionHandler(ComandoHandler):
+    def handle(self, comando: CommandIntegration):
+        broker = BrokerWrapper(topic='event-create-transaction', subscription_name='sub-transaction', schema=CommandCreateTransaction)
+        broker.publish(message=comando)
+
+@comando.register(CommandCreateTransaction)
+def ejecutar_comando_crear_transacion(comando: CommandCreateTransaction):
+    handler = CommandCreateTransactionHandler()
+    handler.handle(comando)
+
+# --------------------------------------------------------------------------------------------------------
 
 class CommandRemoveTransaction(CommandIntegration):
     data = CommandCreateTransactionPayload()
+
+class CommandRemoveTransactionHandler(ComandoHandler):
+    def handle(self, comando: CommandIntegration):
+        broker = BrokerWrapper(topic='event-remove-transaction', subscription_name='sub-transaction', schema=CommandRemoveTransaction)
+        broker.publish(message=comando)
+
+@comando.register(CommandRemoveTransaction)
+def ejecutar_comando_remover_transacion(comando: CommandRemoveTransaction):
+    handler = CommandRemoveTransactionHandler()
+    handler.handle(comando)
