@@ -3,6 +3,8 @@ import os
 import pulsar
 import traceback
 
+from flask import session
+
 from src.modules.auth.infrastructure.schema.v1.commands import CommandRegisterCredential
 from src.modules.auth.infrastructure.schema.v1.events import CredentialCreatedEvent
 from src.modules.auth.application.commands.register_credential import RegisterCredential
@@ -51,8 +53,9 @@ def event_topic_subscribe():
             client.close()
 
 # used
-def command_event_subscribe():
+def command_event_subscribe(app):
     try:
+        #session['uow_method'] = 'pulsar'
         event_topic = os.getenv(AUTH_COMMAND_TOPIC, default="unset")
         subscription_name = os.getenv(AUTH_COMMAND_SUB_NAME, default="unset")
         client = pulsar.Client(
@@ -71,16 +74,21 @@ def command_event_subscribe():
             print(f"Pulsar command payload: {payload}")
             #print(f"Pulsar command: {message.value().data}")
             # purpose: to execute the sent command
-            
-            command = RegisterCredential(
-                username=payload.username,
-                password=payload.password,
-                email=payload.email,
-                dni=payload.dni,
-                fullName=payload.fullName,
-                phoneNumber=payload.phoneNumber,
-            )
-            exec_command(command)
+            with app.test_request_context("/async/register-credential"):
+                command = RegisterCredential(
+                    username=payload.username,
+                    password=payload.password,
+                    email=payload.email,
+                    dni=payload.dni,
+                    fullName=payload.fullName,
+                    phoneNumber=payload.phoneNumber,
+                )
+                try:
+                    exec_command(command)
+                except Exception as e:
+                    print("Command error: "+str(e))
+                    consumer.acknowledge(message)
+                    #publish failure event
             consumer.acknowledge(message)
         # client.close()
     except:
