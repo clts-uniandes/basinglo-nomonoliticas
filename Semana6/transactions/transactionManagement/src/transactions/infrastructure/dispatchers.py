@@ -6,18 +6,30 @@ from src.transactions.infrastructure.schema.v1.commands import CommandCreateTran
 from src.seedwork.infraestructure import utils
 
 import datetime
+import os
 
 epoch = datetime.datetime.utcfromtimestamp(0)
+
+PULSAR_TENANT = "PULSAR_TENANT"
+PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
 
 def unix_time_millis(dt):
     return (dt - epoch).total_seconds() * 1000.0
 
+pulsar_tenant = os.getenv(PULSAR_TENANT, default="public")
+pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default")
+
 class Dispatcher:
-    def _publicar_mensaje(self, mensaje, topico, schema_avro):
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        publicador = cliente.create_producer(topico, schema=schema_avro)
-        publicador.send(mensaje)
-        cliente.close()
+    def _publicar_mensaje(self, message, topic, schema_avro):
+        #cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        client = pulsar.Client(utils.broker_url(), authentication=pulsar.AuthenticationToken(utils.broker_token()),)
+        publisher = client.create_producer(
+            "persistent://" + pulsar_tenant+"/"+pulsar_namespace+"/"+topic, schema=schema_avro )
+        publisher.send(message)
+        client.close()
+        #publicador = cliente.create_producer(topico, schema=schema_avro)
+        #publicador.send(mensaje)
+        #cliente.close()
 
 
     def publish_command(self, command, topic):        

@@ -41,7 +41,7 @@ class TransactionPostgresRepository(TransactionRepository):
 
         enable_transaction = bool(f'{utils.enable_transaction}')
         event = Dispatcher()
-        topic = f'{utils.topic()}'       
+        topic = f'{utils.topic_notification()}'       
         print("El valor del topic es ", topic)
         print("El valor del enable es ", enable_transaction)  
         if enable_transaction == True:
