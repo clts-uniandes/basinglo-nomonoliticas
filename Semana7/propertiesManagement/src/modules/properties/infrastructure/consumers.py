@@ -11,12 +11,10 @@ from src.seedwork.application.commands import exec_command
 def susbcribe_to_commands():
     client = None
     try:
-        # client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
-        # topic = 'event-update-property'
-        # full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${topic}'
-        client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumer = client.subscribe('event-update-property', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='sub-property', schema=AvroSchema(CommandUpdateProperty))
-        #consumer = client.subscribe(full_topic, consumer_type=_pulsar.ConsumerType.Shared, subscription_name='sub-property', schema=AvroSchema(CommandUpdateProperty))
+        client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
+        topic = 'event-update-property'
+        full_topic = f'persistent://{utils.broker_tenant()}/{utils.broker_namespace()}/{topic}'
+        consumer = client.subscribe(full_topic, consumer_type=_pulsar.ConsumerType.Shared, subscription_name='sub-property', schema=AvroSchema(CommandUpdateProperty))
 
         while True:
             message = consumer.receive()
