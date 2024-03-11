@@ -2,6 +2,9 @@ import time
 import os
 import datetime
 
+BROKER_URL = "BROKER_URL"
+PULSAR_TOKEN = "PULSAR_TOKEN"
+
 def time_millis():
     return int(time.time() * 1000)
 
@@ -25,4 +28,12 @@ def topic_saga():
 
 def topic_saga_response():
     return os.getenv('TOPIC_SAGA_RESPONSE', default="topic_transaction_saga_response")
+
+
+def broker_url():
+    return os.getenv(BROKER_URL, default="pulsar://localhost:6650")
+
+
+def broker_token():
+    return os.getenv(PULSAR_TOKEN, default="none")
 

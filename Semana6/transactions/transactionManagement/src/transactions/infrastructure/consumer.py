@@ -3,6 +3,7 @@ import pulsar,_pulsar
 from pulsar.schema import *
 import uuid
 import time
+import os
 import logging
 import traceback
 from src.transactions.infrastructure.schema.v1.commands import CommandCreateTransaction, CommandDeleteTransaction
@@ -10,16 +11,43 @@ from src.seedwork.infraestructure import utils
 from src.seedwork.infraestructure.projections import execute_projection
 from src.transactions.infrastructure.projections import ProjectionReserveConsumer, ProjectionDeleteConsumer
 
+PULSAR_TENANT = "PULSAR_TENANT"
+PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
+
+TRANS_EVENT_TOPIC = "TRANS_EVENT_TOPIC"
+TRANS_COMMAND_TOPIC = "TRANS_COMMAND_TOPIC"
+
+TRANS_COMMAND_SUB_NAME = "TRANS_COMMAND_SUB_NAME"
+TRANS_EVENT_SUB_NAME = "TRANS_EVENT_SUB_NAME"
+
+pulsar_tenant = os.getenv(PULSAR_TENANT, default="public")
+pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default")
+
 def suscribirse_a_comandos(app=None):
-    cliente = None    
+    client = None    
     try:
-        print(f'Vamos a conectarnos al topico {utils.topic_consumer()}')
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
-        consumidor = cliente.subscribe(f'{utils.topic_consumer()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos', schema=AvroSchema(CommandCreateTransaction))
+        
+        #print(f'Vamos a conectarnos al topico {utils.topic_consumer()}')
+        command_topic = os.getenv(TRANS_COMMAND_TOPIC, default="unset")
+        subscription_name = os.getenv(TRANS_COMMAND_SUB_NAME, default="unset")
+        client = pulsar.Client(
+            f"{utils.broker_url()}",
+            authentication=pulsar.AuthenticationToken(utils.broker_token()),
+        )
+        
+        consumer = client.subscribe(
+            pulsar_tenant + "/" + pulsar_namespace + "/" + command_topic,
+            consumer_type=pulsar.ConsumerType.Shared,
+            subscription_name=subscription_name,
+            schema=pulsar.schema.AvroSchema(CommandCreateTransaction),
+        )
+        
+        #cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
+        #consumidor = cliente.subscribe(f'{utils.topic_consumer()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos', schema=AvroSchema(CommandCreateTransaction))
         print(f'Cliente conectado al topico {utils.topic_consumer()}')
 
         while True:
-            mensaje = consumidor.receive()            
+            mensaje = consumer.receive()            
             print(f'Comando recibido: {mensaje.value().data}')
             getValor = mensaje.value()
             getProperties = mensaje.properties()
@@ -42,36 +70,50 @@ def suscribirse_a_comandos(app=None):
                                                          ),app = app)            
             
             print("Vamos a reconocer el mensaje despues de la proyeccion")
-            consumidor.acknowledge(mensaje)
+            consumer.acknowledge(mensaje)
             print("Fin de la solicitud del cliente")
-        cliente.close()
+        client.close()
     except:
         logging.error('ERROR: Suscribiendose al tópico de comandos!')
         traceback.print_exc()
-        if cliente:
-            cliente.close()
+        if client:
+            client.close()
 
 
 def suscribirse_a_notificacion_saga(app=None):
-    cliente = None    
+    client = None    
     try:
-        print(f'Vamos a conectarnos al topico de la saga {utils.topic_saga()}')
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
-        consumidor = cliente.subscribe(f'{utils.topic_saga()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
-        print(f'Cliente conectado al topico {utils.topic_saga()}')
+        #print(f'Vamos a conectarnos al topico de la saga {utils.topic_saga()}')
+        
+        event_topic = os.getenv(TRANS_EVENT_TOPIC, default="unset")
+        subscription_name = os.getenv(TRANS_EVENT_SUB_NAME, default="unset")
+        client = pulsar.Client(
+            f"{utils.broker_url()}",
+            authentication=pulsar.AuthenticationToken(utils.broker_token()),
+        )
+        consumer = client.subscribe(
+            pulsar_tenant + "/" + pulsar_namespace + "/" + event_topic,
+            consumer_type=pulsar.ConsumerType.Shared,
+            subscription_name=subscription_name,
+            schema=pulsar.schema.AvroSchema(CommandDeleteTransaction),
+        )
+        
+        #cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
+        #consumidor = cliente.subscribe(f'{utils.topic_saga()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
+        #print(f'Cliente conectado al topico {utils.topic_saga()}')
 
         while True:
-            mensaje = consumidor.receive()            
+            mensaje = consumer.receive()            
             print(f'Comando recibido: {mensaje.value().data}')
             getValor = mensaje.value()
             print("vamos a ejecutar la proyeccion")
             execute_projection(ProjectionDeleteConsumer(getValor.data.order),app = app)
             print("Vamos a reconocer el mensaje despues de la proyeccion")
-            consumidor.acknowledge(mensaje)
+            consumer.acknowledge(mensaje)
             print("Fin de la solicitud del cliente")
-        cliente.close()
+        client.close()
     except:
         logging.error('ERROR: Suscribiendose al tópico de comandos!')
         traceback.print_exc()
-        if cliente:
-            cliente.close()
+        if client:
+            client.close()
