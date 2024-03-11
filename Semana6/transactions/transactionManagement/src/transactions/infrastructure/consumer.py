@@ -13,6 +13,7 @@ from src.transactions.infrastructure.projections import ProjectionReserveConsume
 
 
 TRANS_COMMAND_SUB_NAME = "TRANS_COMMAND_SUB_NAME"
+SAGA_COMMAND_SUB_NAME = "SAGA_COMMAND_SUB_NAME"
 
 PULSAR_TENANT = "PULSAR_TENANT"
 PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
@@ -28,10 +29,16 @@ def suscribirse_a_comandos(app=None):
         print("el nombre de la subscripcion Nelson es ", subscription_name)
         print("El valor de pulsar_tenant es ", pulsar_tenant)
         print("El valor de pulsar namespace es ", pulsar_namespace)
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        
+        #cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        print("veamos el primero: ")
+        print(f'pulsar://{utils.broker_host()}:6650')
+        broke_conection=f'{utils.broker_url()}'
+        print("veamos el segundo usando la env general : ", broke_conection)        
+        cliente = pulsar.Client(broke_conection,authentication=pulsar.AuthenticationToken(utils.broker_token()))
+
         topico_transaction = f'{utils.topic_consumer()}'  
-        print("El nombre del topico Nelson es ", topico_transaction)
-           
+        print("El nombre del topico Nelson es ", topico_transaction)           
         #consumidor = cliente.subscribe(f'{utils.topic_consumer()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name=subscription_name, schema=AvroSchema(CommandCreateTransaction))
         consumidor = cliente.subscribe(pulsar_tenant + "/" + pulsar_namespace + "/" + topico_transaction, consumer_type=_pulsar.ConsumerType.Shared, subscription_name=subscription_name, schema=AvroSchema(CommandCreateTransaction))
         
@@ -75,8 +82,11 @@ def suscribirse_a_notificacion_saga(app=None):
     cliente = None    
     try:
         print(f'Vamos a conectarnos al topico de la saga {utils.topic_saga()}')
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
-        consumidor = cliente.subscribe(f'{utils.topic_saga()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
+        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        topico_transaction_saga = f'{utils.topic_saga()}'
+        print("El nombre del topico Nelson es ", topico_transaction_saga)
+        #consumidor = cliente.subscribe(f'{utils.topic_saga()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
+        consumidor = cliente.subscribe(pulsar_tenant + "/" + pulsar_namespace + "/" + topico_transaction_saga, consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
         print(f'Cliente conectado al topico {utils.topic_saga()}')
 
         while True:
