@@ -11,8 +11,8 @@ def time_millis():
 def broker_host():
     return os.getenv('BROKER_HOST', default="localhost")
 
-def topic():
-    return os.getenv('TOPIC', default="topic_transaction")
+def topic_trans_saved():
+    return os.getenv('TOPIC_TRANS_SAVED', default="topic_transaction_saved")
 
 def topic_consumer():
     return os.getenv('TOPIC_CONSUMER', default="topic_transaction_consumer")

@@ -81,12 +81,16 @@ def suscribirse_a_comandos(app=None):
 def suscribirse_a_notificacion_saga(app=None):
     cliente = None    
     try:
+        subscription_name = os.getenv(SAGA_COMMAND_SUB_NAME, default="unset")
+        print("el nombre de la subscripcion Nelson es ", subscription_name)
         print(f'Vamos a conectarnos al topico de la saga {utils.topic_saga()}')
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        broke_conection=f'{utils.broker_url()}'
+        cliente = pulsar.Client(broke_conection,authentication=pulsar.AuthenticationToken(utils.broker_token()))
+        #cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
         topico_transaction_saga = f'{utils.topic_saga()}'
         print("El nombre del topico Nelson es ", topico_transaction_saga)
         #consumidor = cliente.subscribe(f'{utils.topic_saga()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
-        consumidor = cliente.subscribe(pulsar_tenant + "/" + pulsar_namespace + "/" + topico_transaction_saga, consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
+        consumidor = cliente.subscribe(pulsar_tenant + "/" + pulsar_namespace + "/" + topico_transaction_saga, consumer_type=_pulsar.ConsumerType.Shared, subscription_name=subscription_name, schema=AvroSchema(CommandDeleteTransaction))
         print(f'Cliente conectado al topico {utils.topic_saga()}')
 
         while True:
