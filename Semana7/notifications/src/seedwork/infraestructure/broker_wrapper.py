@@ -12,8 +12,8 @@ class BrokerWrapper:
 
     def connect(self):
         self.client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
-        full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
-
+        full_topic = f'persistent://{utils.broker_tenant()}/{utils.broker_namespace()}/{self.topic}'
+        print("Subscribe to:"+full_topic)
         self.consumer = self.client.subscribe(
             topic=full_topic,
             consumer_type=pulsar.ConsumerType.Shared,
@@ -23,7 +23,8 @@ class BrokerWrapper:
 
     def publish(self, message):
         self.client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
-        full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
+        full_topic = f'persistent://{utils.broker_tenant()}/{utils.broker_namespace()}/{self.topic}'
+        print("Publish to:"+full_topic)
         publicador = self.client.create_producer(
             topic=full_topic,
             schema=AvroSchema(self.schema)
