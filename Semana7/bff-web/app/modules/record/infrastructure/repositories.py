@@ -28,7 +28,7 @@ class RecordRepository:
             time=utils.time_millis(),
             specversion = "v1",
             type = "CommandStartTransaction",
-            #ingestion=utils.time_millis(),
+            ingestion=utils.time_millis(),
             datacontenttype="AVRO",
             service_name = "PDA BFF Web edition",
             data=payload
