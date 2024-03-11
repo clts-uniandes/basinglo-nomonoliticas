@@ -62,3 +62,7 @@ def check_pulsar():
     client.close()
     print("Conexion exitosa")
     return { 'msg': 'Pulsar OK'}, HTTPStatus.ACCEPTED
+
+@transactions_bp.route("ping", methods=["GET"])
+def health_check():
+    return "pong", 200
