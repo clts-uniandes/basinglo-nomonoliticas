@@ -2,7 +2,12 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, UUID4
 
-# examples
+# testing only
+
+class GenericResponse(BaseModel):
+    msg: str
+
+# Transactions, unused
 
 class Transaction(BaseModel):
     buyer_id: str
@@ -11,6 +16,14 @@ class Transaction(BaseModel):
     amount: int
     realization_date: datetime
     notes: Optional[str]
+
+class TransactionDetailResponse(Transaction):
+    id: int
+
+class TransactionsResponse(BaseModel):
+    data: List[TransactionDetailResponse]
+
+# Users, active
 
 class Login(BaseModel):
     username: str
@@ -24,16 +37,18 @@ class NewUser(BaseModel):
     fullName: str
     phoneNumber: str
 
-class GenericResponse(BaseModel):
+class LoginResponse(BaseModel):
     msg: str
 
-class TransactionDetailResponse(Transaction):
-    id: int
+# Record saga, active
 
-class TransactionsResponse(BaseModel):
-    data: List[TransactionDetailResponse]
-    #total_pages: int
+class NewSellTransaction(BaseModel):
+    dni_landlord : str
+    dni_tenant : str
+    id_property : str
+    monetary_value : str
+    contract_initial_date : str
+    contract_final_date : str
 
-class LoginResponse(BaseModel):
-    token: str
-    
+class RecordResponse(BaseModel):
+    msg: str 

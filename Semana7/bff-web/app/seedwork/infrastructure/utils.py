@@ -61,5 +61,5 @@ def get_avro_schema_from_dict(json_schema: dict) -> AvroSchema:
 
 
 # others
-def build_request_uri(host: str, endpoint: str) -> str:
-    return f"https://{host}/{endpoint}"
+def build_request_uri(url: str, endpoint: str) -> str:
+    return f"{url}/{endpoint}"

@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 from fastapi import FastAPI, Request
 from sse_starlette.sse import EventSourceResponse
@@ -11,8 +12,8 @@ from app.modules.transaction.infrastructure.consumers import topic_subscribe
 PULSAR_TENANT = "PULSAR_TENANT"
 PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
 
-USER_EVENT_TOPIC = "USER_EVENT_TOPIC"
-TRANSACTION_EVENT_TOPIC = "TRANSACTION_EVENT_TOPIC"
+USERS_EVENT_TOPIC = "USERS_EVENT_TOPIC"
+REGISTER_EVENT_TOPIC = "REGISTER_EVENT_TOPIC"
 BFF_SUB_NAME = "BFF_SUB_NAME"
 
 settings = BaseConfig()
@@ -32,20 +33,29 @@ async def startup():
 
     pulsar_tenant = os.getenv(PULSAR_TENANT, default="public")
     pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default")
-    # user_event_topic=os.getenv(USER_EVENT_TOPIC, default="")
-    transaction_event_topic = os.getenv(TRANSACTION_EVENT_TOPIC, default="")
+
+    users_event_topic=os.getenv(USERS_EVENT_TOPIC, default="unset")
+    register_event_topic=os.getenv(REGISTER_EVENT_TOPIC, default="unset")
+    
     subscription_name = os.getenv(BFF_SUB_NAME, default="")
     print("adding futures")
-    # taskUser = asyncio.ensure_future(topic_subscribe(pulsar_tenant+"/"+pulsar_namespace+"/"+transaction_event_topic,subscription_name, events=events))
-    taskTransaction = asyncio.ensure_future(
+    # taskNotification = ... outdated
+    taskUsers = asyncio.ensure_future(
         topic_subscribe(
-            pulsar_tenant + "/" + pulsar_namespace + "/" + transaction_event_topic,
+            pulsar_tenant + "/" + pulsar_namespace + "/" + users_event_topic,
             subscription_name,
             events=events,
         )
     )
-    # tasks.append(taskUser)
-    tasks.append(taskTransaction)
+    taskRegister = asyncio.ensure_future(
+        topic_subscribe(
+            pulsar_tenant + "/" + pulsar_namespace + "/" + register_event_topic,
+            subscription_name,
+            events=events,
+        )
+    )
+    tasks.append(taskRegister)
+    tasks.append(taskUsers)
 
 
 @app.on_event("shutdown")
@@ -60,6 +70,48 @@ async def stream_events(request: Request):
     def new_event():
         global events
         return {"data": events.pop(), "event": "NewEvent"}
+
+    async def get_events():
+        global events
+        while True:
+            if await request.is_disconnected():
+                break
+            if len(events) > 0:
+                yield new_event()
+            await asyncio.sleep(0.1)
+
+    return EventSourceResponse(get_events())
+
+@app.get("/event-stream-users")
+async def stream_users_events(request: Request):
+    def new_event():
+        global events
+        new_event = events.pop()
+        if "PersonalInfoCreated" in new_event:
+            return {"data": new_event, "event": "PersonalInfoCreated"}
+        else:
+            events.append(new_event)
+
+    async def get_events():
+        global events
+        while True:
+            if await request.is_disconnected():
+                break
+            if len(events) > 0:
+                yield new_event()
+            await asyncio.sleep(0.1)
+
+    return EventSourceResponse(get_events())
+
+@app.get("/event-stream-saga")
+async def stream_saga_events(request: Request):
+    def new_event():
+        global events
+        new_event = events.pop()
+        if "Saga" in new_event:
+            return {"data": new_event, "event": "Saga"}
+        else:
+            events.append(new_event)
 
     async def get_events():
         global events

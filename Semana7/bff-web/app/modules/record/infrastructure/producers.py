@@ -3,6 +3,7 @@ from pulsar import Client, AuthenticationToken
 
 from app.seedwork.infrastructure import utils
 
+
 class Producer:
     def __init__(self): ...
 

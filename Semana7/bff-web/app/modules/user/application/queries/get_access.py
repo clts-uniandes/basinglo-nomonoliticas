@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.modules.user.infrastructure.repositories import (
-        UserRepository,
+        UsersRepository,
     )
 
 class GetAccess:
-    def __init__(self, user_repository: "UserRepository"):
+    def __init__(self, user_repository: "UsersRepository"):
         self.user_repository = user_repository
 
     async def get_access(self, request: Request):

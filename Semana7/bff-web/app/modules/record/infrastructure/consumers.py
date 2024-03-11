@@ -2,7 +2,6 @@ import aiopulsar
 import logging
 import pulsar
 import traceback
-
 from app.seedwork.infrastructure import utils
 
 
@@ -33,7 +32,7 @@ async def topic_subscribe(
                     message = await consumer.receive()
                     payload = message.value()
                     print(f"GOT MESSAGE! Payload: {payload}")
-                    events.append(str(payload))
+                    events.append(payload)
                     await consumer.acknowledge(message)
     except:
         logging.error(
