@@ -36,3 +36,10 @@ class ResponseTransaction(AgregationRoot):
         self.id_transaction = response.id_transaction
         self.status = response.status
         self.created_at = response.created_at
+
+@dataclass
+class ResponseSaga(AgregationRoot):
+    status: str = field(default=None)
+
+    def create_response_saga(self, response:ResponseSaga):
+        self.status = response.status

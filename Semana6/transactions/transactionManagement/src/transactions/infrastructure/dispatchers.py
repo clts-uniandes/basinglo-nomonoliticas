@@ -1,7 +1,7 @@
 import pulsar
 from pulsar.schema import *
 
-from src.transactions.infrastructure.schema.v1.events import EventTransactionCreated, TransactionCreatedPayload
+from src.transactions.infrastructure.schema.v1.events import EventTransactionCreated, TransactionCreatedPayload, TransactionDeletedPayload, EventTransactionDeleted
 from src.transactions.infrastructure.schema.v1.commands import CommandCreateTransaction, CommandCreateTransactionPayload
 from src.seedwork.infraestructure import utils
 
@@ -40,3 +40,11 @@ class Dispatcher:
         )
         event_integration = EventTransactionCreated(data=payload)
         self._publicar_mensaje(event_integration, topic, AvroSchema(EventTransactionCreated))
+
+
+    def publish_event_saga(self, event, topic):
+        payload = TransactionDeletedPayload(            
+            status = str(event.status)            
+        )
+        event_integration = EventTransactionDeleted(data=payload)
+        self._publicar_mensaje(event_integration, topic, AvroSchema(EventTransactionDeleted))

@@ -17,3 +17,12 @@ def topic_consumer():
 def millis_a_datetime(millis):
     return datetime.datetime.fromtimestamp(millis/1000.0)
 
+def enable_transaction():
+    return os.getenv('ENABLE', default= True)
+
+def topic_saga():
+    return os.getenv('TOPIC_SAGA', default="topic_transaction_saga")
+
+def topic_saga_response():
+    return os.getenv('TOPIC_SAGA_RESPONSE', default="topic_transaction_saga_response")
+

@@ -8,3 +8,10 @@ class TransactionCreatedPayload(Record):
 
 class EventTransactionCreated(EventIntegracion):
     data = TransactionCreatedPayload()
+
+
+class TransactionDeletedPayload(Record):
+    status = String()
+
+class EventTransactionDeleted(EventIntegracion):
+    data = TransactionDeletedPayload()

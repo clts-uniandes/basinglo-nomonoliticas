@@ -33,6 +33,9 @@ services:
       - BROKER_HOST=broker_pulsar
       - TOPIC=topic_transaction_properties
       - TOPIC_CONSUMER=topic_transaction_consumer
+      - ENABLE=True
+      - TOPIC_SAGA=topic_transaction_saga
+      - TOPIC_SAGA_RESPONSE=topic_transaction_saga_response
 
   db_transactions:
     image: postgres:12.4-alpine

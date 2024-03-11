@@ -13,3 +13,11 @@ class CommandCreateTransactionPayload(CommandIntegration):
 
 class CommandCreateTransaction(CommandIntegration):
     data = CommandCreateTransactionPayload()
+
+
+class CommandDeleteTransactionPayload(CommandIntegration):
+    order = String()
+
+
+class CommandDeleteTransaction(CommandIntegration):
+    data = CommandDeleteTransactionPayload()

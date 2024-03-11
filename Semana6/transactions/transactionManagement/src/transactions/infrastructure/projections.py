@@ -67,3 +67,48 @@ def execute_projection_reserve(projection, app=None):
     except:
         traceback.print_exc()
         logging.error('ERROR: Persistiendo!')
+
+
+####### DELETE Transaction ######
+
+class ProjectionDelete(Projection,ABC):
+    @abstractmethod
+    def execute(self):
+        ...
+
+
+class ProjectionDeleteConsumer(ProjectionDelete):
+    def __init__(self,order):
+        self.order = order        
+
+    def execute(self, db= None):
+        if not db:
+            logging.error('ERROR: DB del app no puede ser nula')
+            return
+        
+        self.repo_factory: RepoFactory = RepoFactory()
+        repository = self.repo_factory.create_object(
+            TransactionRepository.__class__
+        )
+        repository.deleteAsincronic()
+        db.session.commit()
+
+
+class ProjectionDeleteHandler(ProjectionHandler):    
+    def handle(self, projection: ProjectionDelete):
+        from src.config.db import db
+        projection.execute(db=db)
+
+
+@projection.register(ProjectionDeleteConsumer)
+def execute_projection_delete(projection, app=None):
+    
+    try:        
+        handler = ProjectionDeleteHandler()
+        handler.handle(projection)
+            
+    except:
+        traceback.print_exc()
+        logging.error('ERROR: Eliminando!')
+
+

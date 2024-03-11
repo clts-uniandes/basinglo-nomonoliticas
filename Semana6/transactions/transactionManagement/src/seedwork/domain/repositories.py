@@ -14,6 +14,10 @@ class Repository(ABC):
     def addAsincronic(self, entity: Entity):
         ...
 
+    @abstractmethod
+    def deleteAsincronic(self):
+        ...
+
 class Mapper(ABC):
     @abstractmethod
     def find_type(self) -> type:

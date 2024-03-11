@@ -1,14 +1,14 @@
-from src.transactions.infrastructure.projections import ProjectionReserveConsumer
+
 import pulsar,_pulsar  
 from pulsar.schema import *
 import uuid
 import time
 import logging
 import traceback
-from src.transactions.infrastructure.schema.v1.commands import CommandCreateTransactionPayload, CommandCreateTransaction
+from src.transactions.infrastructure.schema.v1.commands import CommandCreateTransaction, CommandDeleteTransaction
 from src.seedwork.infraestructure import utils
 from src.seedwork.infraestructure.projections import execute_projection
-
+from src.transactions.infrastructure.projections import ProjectionReserveConsumer, ProjectionDeleteConsumer
 
 def suscribirse_a_comandos(app=None):
     cliente = None    
@@ -51,3 +51,27 @@ def suscribirse_a_comandos(app=None):
         if cliente:
             cliente.close()
 
+
+def suscribirse_a_notificacion_saga(app=None):
+    cliente = None    
+    try:
+        print(f'Vamos a conectarnos al topico de la saga {utils.topic_saga()}')
+        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
+        consumidor = cliente.subscribe(f'{utils.topic_saga()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos-saga', schema=AvroSchema(CommandDeleteTransaction))
+        print(f'Cliente conectado al topico {utils.topic_saga()}')
+
+        while True:
+            mensaje = consumidor.receive()            
+            print(f'Comando recibido: {mensaje.value().data}')
+            getValor = mensaje.value()
+            print("vamos a ejecutar la proyeccion")
+            execute_projection(ProjectionDeleteConsumer(getValor.data.order),app = app)
+            print("Vamos a reconocer el mensaje despues de la proyeccion")
+            consumidor.acknowledge(mensaje)
+            print("Fin de la solicitud del cliente")
+        cliente.close()
+    except:
+        logging.error('ERROR: Suscribiendose al tópico de comandos!')
+        traceback.print_exc()
+        if cliente:
+            cliente.close()
