@@ -36,6 +36,12 @@ services:
       - ENABLE=True
       - TOPIC_SAGA=topic_transaction_saga
       - TOPIC_SAGA_RESPONSE=topic_transaction_saga_response
+      - TRANS_COMMAND_TOPIC=publish-transaction-result-topic
+      - TRANS_COMMAND_SUB_NAME=transaction-sub-comandos
+      - TRANS_EVENT_TOPIC=topic_transaction_saga
+      - TRANS_EVENT_SUB_NAME=topic_transaction_saga_response
+      - TRANS_COMMAND_SUB_NAME=transaction-sub-comandos_2
+
 
   db_transactions:
     image: postgres:12.4-alpine

@@ -2,6 +2,7 @@
 import pulsar,_pulsar  
 from pulsar.schema import *
 import uuid
+import os
 import time
 import logging
 import traceback
@@ -10,12 +11,19 @@ from src.seedwork.infraestructure import utils
 from src.seedwork.infraestructure.projections import execute_projection
 from src.transactions.infrastructure.projections import ProjectionReserveConsumer, ProjectionDeleteConsumer
 
+
+TRANS_COMMAND_SUB_NAME = "TRANS_COMMAND_SUB_NAME"
+
+
+
 def suscribirse_a_comandos(app=None):
     cliente = None    
     try:
         print(f'Vamos a conectarnos al topico {utils.topic_consumer()}')
+        subscription_name = os.getenv(TRANS_COMMAND_SUB_NAME, default="unset")
+        print("el nombre de la subscripcion Nelson es ", subscription_name)
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
-        consumidor = cliente.subscribe(f'{utils.topic_consumer()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='transaction-sub-comandos', schema=AvroSchema(CommandCreateTransaction))
+        consumidor = cliente.subscribe(f'{utils.topic_consumer()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name=subscription_name, schema=AvroSchema(CommandCreateTransaction))
         print(f'Cliente conectado al topico {utils.topic_consumer()}')
 
         while True:
