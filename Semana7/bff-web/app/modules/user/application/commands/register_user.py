@@ -12,7 +12,7 @@ class RegisterUser:
         try:
             return await self.user_repository.register_user(request, background_tasks)
         except HTTPException as e:
-            print("Http exception: ", e.detail)
+            print("Pulsar exception: ", e.detail)
             raise e
         except Exception as e:
             print("Internal server error: ", e)

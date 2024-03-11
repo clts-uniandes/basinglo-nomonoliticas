@@ -13,8 +13,8 @@ services:
       - PULSAR_NAMESPACE=default
       - USER_COMMAND_TOPIC=register-credential-topic
       - USER_EVENT_TOPIC=personal-info-created-topic
-      - NOTIFICATION_SAGA_COMMAND_TOPIC=saga--topic
-      - NOTIFICATION_SAGA_EVENT_TOPIC=personal-info-created-topic # might not be needed
+      - RECORD_SAGA_COMMAND_TOPIC=saga--topic
+      - RECORD_SAGA_EVENT_TOPIC=saga--event-topic # might not be needed
       # armar otros listeners para los pasos de la saga
       - BFF_SUB_NAME=bff-web
       - USERS_MS=http://localhost:8002
