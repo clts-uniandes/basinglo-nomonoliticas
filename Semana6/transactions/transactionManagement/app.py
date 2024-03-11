@@ -11,6 +11,7 @@ def start_consumer():
     import threading
     import src.transactions.infrastructure.consumer as consumer
     threading.Thread(target=consumer.suscribirse_a_comandos).start()
+    threading.Thread(target=consumer.suscribirse_a_notificacion_saga).start()
     
 def config_app():
     # init flask app
