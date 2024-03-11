@@ -14,7 +14,11 @@ from src.transactions.infrastructure.projections import ProjectionReserveConsume
 
 TRANS_COMMAND_SUB_NAME = "TRANS_COMMAND_SUB_NAME"
 
+PULSAR_TENANT = "PULSAR_TENANT"
+PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
 
+pulsar_tenant = os.getenv(PULSAR_TENANT, default="public2")
+pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default2")
 
 def suscribirse_a_comandos(app=None):
     cliente = None    
@@ -22,8 +26,15 @@ def suscribirse_a_comandos(app=None):
         print(f'Vamos a conectarnos al topico {utils.topic_consumer()}')
         subscription_name = os.getenv(TRANS_COMMAND_SUB_NAME, default="unset")
         print("el nombre de la subscripcion Nelson es ", subscription_name)
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')        
-        consumidor = cliente.subscribe(f'{utils.topic_consumer()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name=subscription_name, schema=AvroSchema(CommandCreateTransaction))
+        print("El valor de pulsar_tenant es ", pulsar_tenant)
+        print("El valor de pulsar namespace es ", pulsar_namespace)
+        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
+        topico_transaction = f'{utils.topic_consumer()}'  
+        print("El nombre del topico Nelson es ", topico_transaction)
+           
+        #consumidor = cliente.subscribe(f'{utils.topic_consumer()}', consumer_type=_pulsar.ConsumerType.Shared, subscription_name=subscription_name, schema=AvroSchema(CommandCreateTransaction))
+        consumidor = cliente.subscribe(pulsar_tenant + "/" + pulsar_namespace + "/" + topico_transaction, consumer_type=_pulsar.ConsumerType.Shared, subscription_name=subscription_name, schema=AvroSchema(CommandCreateTransaction))
+        
         print(f'Cliente conectado al topico {utils.topic_consumer()}')
 
         while True:
