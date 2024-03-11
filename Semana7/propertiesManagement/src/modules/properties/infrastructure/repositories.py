@@ -6,6 +6,8 @@ from src.modules.properties.domain.factories import PropertyFactory
 from src.modules.properties.domain.entities import Property
 from .mappers import PropertyMapper
 from .dto import Property as PropertyDTO
+from .dispatchers import Dispatcher
+from src.modules.properties.infrastructure.schema.v1.events import EventPropertyUpdated, EventPropertyUpdatedFailed, PropertyUpdatedPayload
 
 class PropertyPostgresRepository(PropertyRepository):
 
@@ -34,7 +36,6 @@ class PropertyPostgresRepository(PropertyRepository):
         existing_property_dto = db.session.query(PropertyDTO).filter_by(id=property_id).first()
         if existing_property_dto is None:
             raise Exception("Property not found")
-        
         if property_dto.property_size is not None:
             existing_property_dto.property_size = property_dto.property_size
         if property_dto.property_type is not None:
@@ -51,4 +52,14 @@ class PropertyPostgresRepository(PropertyRepository):
             existing_property_dto.ubication = property_dto.ubication
         if property_dto.owner_id is not None:
             existing_property_dto.owner_id = property_dto.owner_id
-        db.session.commit()
+        try:
+            db.session.commit()
+            dispatcher = Dispatcher()
+            payload = PropertyUpdatedPayload(id = property_id, owner_id = property_dto.owner_id)
+            event_integration = EventPropertyUpdated(data=payload)
+            dispatcher.publish_menssage(event_integration, 'update-property-topic')
+        except Exception as e:
+            dispatcher = Dispatcher()
+            payload = PropertyUpdatedPayload(id = property_id, owner_id = property_dto.owner_id)
+            event_integration = EventPropertyUpdatedFailed(data=payload)
+            dispatcher.publish_menssage(event_integration, 'update-property-topic')

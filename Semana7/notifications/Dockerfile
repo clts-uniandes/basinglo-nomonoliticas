@@ -1,8 +1,7 @@
-FROM python:3.10
-
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 COPY . .
-
-CMD [ "python", "./app.py" ]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0"]

@@ -2,13 +2,16 @@ from pulsar.schema import *
 from dataclasses import dataclass, field
 from src.seedwork.infraestructure.schema.v1.commands import CommandIntegration
  
-class CommandCreateTransactionPayload(CommandIntegration):
-    dni_landlord = String()
-    dni_tenant = String()
-    monetary_value = String()
-    type_lease = String()
-    contract_initial_date = String()
-    contract_final_date = String()
+class CommandUpdatePropertyPayload(CommandIntegration):
+    id = String()
+    property_size = Float()
+    property_type = String()
+    total_area_size = Float()
+    floors_number = Integer()
+    is_parking = Boolean()
+    photos_registry = String()
+    ubication = String()
+    owner_id = String()
  
-class CommandCreateTransaction(CommandIntegration):
-    data = CommandCreateTransactionPayload()
+class CommandUpdateProperty(CommandIntegration):
+    data = CommandUpdatePropertyPayload()
