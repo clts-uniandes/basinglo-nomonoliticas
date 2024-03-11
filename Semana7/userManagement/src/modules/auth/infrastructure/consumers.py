@@ -56,14 +56,14 @@ def event_topic_subscribe():
 def command_event_subscribe(app):
     try:
         #session['uow_method'] = 'pulsar'
-        event_topic = os.getenv(AUTH_COMMAND_TOPIC, default="unset")
+        command_topic = os.getenv(AUTH_COMMAND_TOPIC, default="unset")
         subscription_name = os.getenv(AUTH_COMMAND_SUB_NAME, default="unset")
         client = pulsar.Client(
             f"{utils.broker_url()}",
             authentication=pulsar.AuthenticationToken(utils.broker_token()),
         )
         consumer = client.subscribe(
-            pulsar_tenant + "/" + pulsar_namespace + "/" + event_topic,
+            pulsar_tenant + "/" + pulsar_namespace + "/" + command_topic,
             consumer_type=pulsar.ConsumerType.Shared,
             subscription_name=subscription_name,
             schema=pulsar.schema.AvroSchema(CommandRegisterCredential),
