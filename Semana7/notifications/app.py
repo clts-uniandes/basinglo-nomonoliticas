@@ -17,23 +17,23 @@ def config_app():
 
     # auth.subscribe_to_events()
 
-    notification.subscribe_to_create_notification_command()
-    notification.subscribe_to_reverse_notification_command()
+    threading.Thread(target=notification.subscribe_to_create_notification_command).start()
+    threading.Thread(target=notification.subscribe_to_reverse_notification_command).start()
 
     # PASO 0
-    sagas.subscribe_to_start_saga_transaction_command()
+    threading.Thread(target=sagas.subscribe_to_start_saga_transaction_command).start()
 
     # PASO 1
-    sagas.subscribe_to_created_notification_event()
-    sagas.subscribe_to_failed_notification_event()
+    threading.Thread(target=sagas.subscribe_to_created_notification_event).start()
+    threading.Thread(target=sagas.subscribe_to_failed_notification_event).start()
 
     # PASO 2
-    sagas.subscribe_to_created_transaction_event()
-    sagas.subscribe_to_failed_transaction_event()
+    threading.Thread(target=sagas.subscribe_to_created_transaction_event).start()
+    threading.Thread(target=sagas.subscribe_to_failed_transaction_event).start()
 
     # PASO 3
-    sagas.subscribe_to_failed_updated_property_event()
-    sagas.subscribe_to_failed_updated_property_event()
+    threading.Thread(target=sagas.subscribe_to_updated_property_event).start()
+    threading.Thread(target=sagas.subscribe_to_failed_updated_property_event).start()
 
     return flask_app
 

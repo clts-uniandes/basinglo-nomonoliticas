@@ -10,7 +10,10 @@ services:
       DB_HOST: db_users
       DB_PORT: 5432
       DB_NAME: users
-      BROKER_PATH: pulsar
+      BROKER_URL: pulsar+ssl://pulsar-gcp-uscentral1.streaming.datastax.com:6651
+      PULSAR_TOKEN: put_token_here
+      BROKER_TENANT: basinglo
+      BROKER_NAMESPACE: default
       PYTHONUNBUFFERED: 1
     ports:
       - "3000:8000"
@@ -46,8 +49,17 @@ services:
 
   properties:
     build: ./propertiesManagement
-    env_file:
-      - ./propertiesManagement/.env
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db_properties
+      DB_PORT: 5432
+      DB_NAME: properties
+      BROKER_PATH: pulsar+ssl://pulsar-gcp-uscentral1.streaming.datastax.com:6651
+      BROKER_TOKEN: put_token_here
+      BROKER_TENANT: basinglo
+      BROKER_NAMESPACE: default
+      PYTHONUNBUFFERED: 1
     ports:
       - "3001:8000"
     deploy:
@@ -82,9 +94,8 @@ services:
   notifications:
     build: ./notifications
     environment:
-      BROKER_PATH: pulsar
-      #BROKER_PATH: pulsar://broker_pulsar:6650
-      BROKER_TOKEN: putatokenhere
+      BROKER_PATH: pulsar+ssl://pulsar-gcp-uscentral1.streaming.datastax.com:6651
+      BROKER_TOKEN: put_token_here
       BROKER_TENANT: basinglo
       BROKER_NAMESPACE: default
       PYTHONUNBUFFERED: 1
