@@ -11,29 +11,25 @@ class BrokerWrapper:
         self.schema = schema
 
     def connect(self):
-        self.client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        # self.client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
-        # full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
+        self.client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
+        full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
 
         self.consumer = self.client.subscribe(
-            # topic=full_topic,
-            topic=self.topic,
+            topic=full_topic,
             consumer_type=pulsar.ConsumerType.Shared,
             subscription_name=self.subscription_name,
             schema=AvroSchema(self.schema)
         )
 
     def publish(self, message):
-        client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        # self.client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
-        # full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
-        publicador = client.create_producer(
-            # topic=full_topic,
-            topic=self.topic,
+        self.client = pulsar.Client(f'{utils.broker_host()}', authentication=pulsar.AuthenticationToken(utils.broker_token()))
+        full_topic = f'persistent://${utils.broker_tenant()}/${utils.broker_namespace()}/${self.topic}'
+        publicador = self.client.create_producer(
+            topic=full_topic,
             schema=AvroSchema(self.schema)
         )
         publicador.send(message)
-        client.close()
+        self.client.close()
 
     def receive_message(self):
         msg = self.consumer.receive()
