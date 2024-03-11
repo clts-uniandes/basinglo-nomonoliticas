@@ -39,7 +39,7 @@ class TransactionPostgresRepository(TransactionRepository):
             transaction, TransactionMapper()
         )
 
-        enable_transaction = {utils.enable_transaction}
+        enable_transaction = bool(f'{utils.enable_transaction}')
         event = Dispatcher()
         topic = f'{utils.topic()}'       
         print("El valor del topic es ", topic)
