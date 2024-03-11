@@ -3,8 +3,9 @@ from src.seedwork.infraestructure.broker_wrapper import BrokerWrapper
 from src.modules.transactions.infrastructure.schema.v1.events import EventTransactionCreated, EventTransactionFailed
 from src.modules.properties.infrastructure.schema.v1.events import EventPropertyUpdated, EventPropertyUpdatedFailed
 from src.modules.sagas.application.managers.saga_transaction import ManagerTransaction
-from src.modules.notifications.infrastructure.schema.v1.commands import CommandStartTransaction, CommandCreateNotification, ejecutar_comando_crear_notification
+from src.modules.notifications.infrastructure.schema.v1.commands import CommandStartTransactionPayload, CommandStartTransaction, CommandCreateNotification, ejecutar_comando_crear_notification
 from src.modules.notifications.infrastructure.schema.v1.events import EventNotificationCreated, EventNotificationFailed
+from src.modules.sagas.seedwork.infraestructure import utils
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 # PASO 0: Iniciar saga con crear
@@ -15,17 +16,28 @@ def subscribe_to_start_saga_transaction_command():
     transactionStartSubscription.connect()
     managerTransaction = ManagerTransaction()
     while True:
-        print(f'Event received: {message.value()}')
         message = transactionStartSubscription.receive_message()
+        print(f'Event received: {message.value()}')
         managerTransaction.initializeSteps()
         data = message.value().data
-        initCommand = CommandCreateNotification(
+
+        payload = CommandStartTransactionPayload(
             dni_landlord = data.dni_landlord,
             dni_tenant = data.dni_tenant,
             id_property = data.id_property,
             monetary_value = data.monetary_value,
             contract_initial_date = data.contract_initial_date,
             contract_final_date = data.contract_final_date,
+        )
+        initCommand = CommandCreateNotification(
+            id = data.id, #autogenerar?
+            time = int(utils.time_millis()),
+            ingestion = data.ingestion,
+            specversion = "v1",
+            type = "CommandCreateNotification",
+            datacontenttype = "AVRO",
+            service_name = "Notifications",
+            data=payload
         )
         ejecutar_comando_crear_notification(initCommand)
         transactionStartSubscription.acknowledge_message(message)    

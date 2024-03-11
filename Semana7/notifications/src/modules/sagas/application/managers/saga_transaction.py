@@ -8,15 +8,17 @@ from src.modules.properties.infrastructure.schema.v1.events import EventProperty
 from src.modules.notifications.infrastructure.schema.v1.commands import CommandCreateNotification, CommandReverseNotification, CommandCreateNotificationPayload
 from src.modules.notifications.infrastructure.schema.v1.events import EventNotificationCreated, EventNotificationFailed
 
+from src.seedwork.infraestructure import utils
+
 class ManagerTransaction(CoordinadorOrquestacion):
 
     def initializeSteps(self):
         self.steps = [
             Inicio(index=0),
             Transaccion(index=1, comando=CommandCreateNotification, evento=EventNotificationCreated, error=EventNotificationFailed, compensacion=CommandReverseNotification),
-            Transaccion(index=2, comando=CommandCreateTransaction, evento=EventTransactionCreated, error=EventTransactionFailed, compensacion=CommandRemoveTransaction),
-            Transaccion(index=3, comando=CommandUpdateProperty, evento=EventPropertyUpdated, error=EventPropertyUpdatedFailed, compensacion=None),
-            Fin(index=3)
+            Transaccion(index=2, comando=CommandUpdateProperty, evento=EventPropertyUpdated, error=EventPropertyUpdatedFailed, compensacion=None),
+            Transaccion(index=3, comando=CommandCreateTransaction, evento=EventTransactionCreated, error=EventTransactionFailed, compensacion=CommandRemoveTransaction),
+            Fin(index=4)
         ]
 
     def iniciar(self):
@@ -44,7 +46,17 @@ class ManagerTransaction(CoordinadorOrquestacion):
                 contract_initial_date = evento.contract_initial_date,
                 contract_final_date = evento.contract_final_date,
             )
-            return CommandCreateTransaction(data=payload)
+            message = CommandCreateTransaction(
+                id = evento.id, #autogenerar?
+                time = int(utils.time_millis()),
+                ingestion = evento.ingestion,
+                specversion = "v1",
+                type = "CommandCreateTransaction",
+                datacontenttype = "AVRO",
+                service_name = "Notifications",
+                data=payload
+            )
+            return message
         
         elif isinstance(evento, EventTransactionCreated) and tipo_comando == CommandUpdateProperty:
             payload = CommandUpdatePropertyPayload(
@@ -64,7 +76,17 @@ class ManagerTransaction(CoordinadorOrquestacion):
                 contract_initial_date = evento.contract_initial_date,
                 contract_final_date = evento.contract_final_date,
             )
-            return CommandRemoveTransaction(data=payload)
+            message = CommandRemoveTransaction(
+                id = evento.id, #autogenerar?
+                time = int(utils.time_millis()),
+                ingestion = evento.ingestion,
+                specversion = "v1",
+                type = "CommandRemoveTransaction",
+                datacontenttype = "AVRO",
+                service_name = "Notifications",
+                data=payload
+            )
+            return message
 
         elif isinstance(evento, EventTransactionFailed) and tipo_comando == CommandReverseNotification:
             payload = CommandCreateNotificationPayload(
@@ -75,7 +97,17 @@ class ManagerTransaction(CoordinadorOrquestacion):
                 contract_initial_date = evento.contract_initial_date,
                 contract_final_date = evento.contract_final_date,
             )
-            return CommandReverseNotification(data=payload)
+            message = CommandReverseNotification(
+                id = evento.id, #autogenerar?
+                time = int(utils.time_millis()),
+                ingestion = evento.ingestion,
+                specversion = "v1",
+                type = "CommandReverseNotification",
+                datacontenttype = "AVRO",
+                service_name = "Notifications",
+                data=payload
+            )
+            return message
 
         else:
             raise ValueError("event and commmand type not supported")

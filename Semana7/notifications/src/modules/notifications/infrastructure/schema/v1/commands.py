@@ -1,3 +1,5 @@
+import time as timelib
+import uuid
 from pulsar.schema import *
 
 from src.seedwork.infraestructure.broker_wrapper import BrokerWrapper
@@ -13,6 +15,13 @@ class CommandStartTransactionPayload(CommandIntegration):
     contract_final_date = String()
 
 class CommandStartTransaction(CommandIntegration):
+    id = String(default=str(uuid.uuid4()))
+    time = Long()
+    ingestion = Long(default=int(timelib.time() * 1000))
+    specversion = String()
+    type = String()
+    datacontenttype = String()
+    service_name = String()
     data = CommandStartTransactionPayload()
 
 class CommandStartTransactionHandler(ComandoHandler):
@@ -28,16 +37,18 @@ def ejecutar_comando_crear_transacion(comando: CommandStartTransaction):
 # --------------------------------------------------------------------------------------------------------
 
 class CommandCreateNotificationPayload(CommandIntegration):
-    dni_landlord = String()
-    dni_tenant = String()
-    id_property = String()
-    monetary_value = String()
-    contract_initial_date = String()
-    contract_final_date = String()
-    
-# --------------------------------------------------------------------------------------------------------
+    id_credential = String()
+    email = String()
+    created_at = String()
 
 class CommandCreateNotification(CommandIntegration):
+    id = String(default=str(uuid.uuid4()))
+    time = Long()
+    ingestion = Long(default=int(timelib.time() * 1000))
+    specversion = String()
+    type = String()
+    datacontenttype = String()
+    service_name = String()
     data = CommandCreateNotificationPayload()
 
 class CommandCreateNotificationHandler(ComandoHandler):
@@ -53,6 +64,13 @@ def ejecutar_comando_crear_notification(comando: CommandCreateNotification):
 # --------------------------------------------------------------------------------------------------------
 
 class CommandReverseNotification(CommandIntegration):
+    id = String(default=str(uuid.uuid4()))
+    time = Long()
+    ingestion = Long(default=int(timelib.time() * 1000))
+    specversion = String()
+    type = String()
+    datacontenttype = String()
+    service_name = String()
     data = CommandCreateNotificationPayload()
 
 class CommandRemoveNotificationHandler(ComandoHandler):
