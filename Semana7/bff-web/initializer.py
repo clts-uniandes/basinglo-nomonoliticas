@@ -1,18 +1,15 @@
 from fastapi import FastAPI
 
 from app.api.v1 import user as user_api
-from app.api.v1 import transactions as transactions_api
+from app.api.v1 import records as records_api
 from app.api import health as health_api
 from app.api import main_page as main_page_api
 
 from app.modules.user.application.queries.get_access import GetAccess
 from app.modules.user.application.commands.register_user import RegisterUser
 from app.modules.user.infrastructure.repositories import UsersRepository
-from app.modules.transaction.application.queries.get_transaction import GetTransactions
-from app.modules.transaction.application.commands.create_transaction import (
-    CreateTransaction,
-)
-from app.modules.transaction.infrastructure.repositories import TransactionRepository
+from app.modules.record.application.commands.record_sell_transaction import RecordSellTransaction
+from app.modules.record.infrastructure.repositories import RecordRepository
 from app.modules.health.application.get_health import GetHealth
 
 
@@ -25,7 +22,7 @@ class Initializer:
         self.init_main_page_module()
         self.init_user_module()
         #self.init_transaction_module()
-        #self.init_notification_saga_module()
+        self.init_notification_saga_module()
         
     def init_health_module(self):
         get_health = GetHealth()
@@ -45,9 +42,8 @@ class Initializer:
         user_api.initialize(get_access, register_user)
         self.app.include_router(user_api.router)
 
-    def init_transaction_module(self):
-        repository = TransactionRepository()
-        get_transactions = GetTransactions(repository)
-        create_transaction = CreateTransaction(repository)
-        transactions_api.initialize(get_transactions, create_transaction)
-        self.app.include_router(transactions_api.router)
+    def init_notification_saga_module(self):
+        repository = RecordRepository()
+        record_sell_transaction = RecordSellTransaction(repository)
+        records_api.initialize(record_sell_transaction)
+        self.app.include_router(records_api.router)

@@ -13,7 +13,19 @@ PULSAR_TENANT = "PULSAR_TENANT"
 PULSAR_NAMESPACE = "PULSAR_NAMESPACE"
 
 USERS_EVENT_TOPIC = "USERS_EVENT_TOPIC"
-REGISTER_EVENT_TOPIC = "REGISTER_EVENT_TOPIC"
+RECORD_EVENT_TOPIC = "RECORD_EVENT_TOPIC"
+
+# success events
+NOTIFICATION_EVENT_TOPIC = "NOTIFICATION_EVENT_TOPIC"
+TRANSACTION_EVENT_TOPIC = "TRANSACTION_EVENT_TOPIC"
+PROPERTIES_EVENT_TOPIC = "PROPERTIES_EVENT_TOPIC"
+
+# failure
+NOTIFICATION_FAIL_EVENT_TOPIC = "NOTIFICATION_FAIL_EVENT_TOPIC"
+TRANSACTIONS_FAIL_EVENT_TOPIC = "TRANSACTIONS_FAIL_EVENT_TOPIC"
+PROPERTIES_FAIL_EVENT_TOPIC = "PROPERTIES_FAIL_EVENT_TOPIC"
+
+
 BFF_SUB_NAME = "BFF_SUB_NAME"
 
 settings = BaseConfig()
@@ -34,8 +46,18 @@ async def startup():
     pulsar_tenant = os.getenv(PULSAR_TENANT, default="public")
     pulsar_namespace = os.getenv(PULSAR_NAMESPACE, default="default")
 
+
     users_event_topic=os.getenv(USERS_EVENT_TOPIC, default="unset")
-    register_event_topic=os.getenv(REGISTER_EVENT_TOPIC, default="unset")
+    record_event_topic=os.getenv(RECORD_EVENT_TOPIC, default="unset")
+
+    # remove comments for debugging
+    #notification_event_topic=os.getenv(NOTIFICATION_EVENT_TOPIC, default="unset")
+    #transaction_event_topic=os.getenv(TRANSACTION_EVENT_TOPIC, default="unset")
+    #properties_event_topic=os.getenv(PROPERTIES_EVENT_TOPIC, default="unset")
+
+    #notification_fail_event_topic=os.getenv(NOTIFICATION_FAIL_EVENT_TOPIC, default="unset")
+    #transaction_fail_event_topic=os.getenv(TRANSACTIONS_FAIL_EVENT_TOPIC, default="unset")
+    #properties_fail_event_topic=os.getenv(PROPERTIES_FAIL_EVENT_TOPIC = "PROPERTIES_FAIL_EVENT_TOPIC", default="unset")
     
     subscription_name = os.getenv(BFF_SUB_NAME, default="")
     print("adding futures")
@@ -47,14 +69,15 @@ async def startup():
             events=events,
         )
     )
-    taskRegister = asyncio.ensure_future(
-        topic_subscribe(
-            pulsar_tenant + "/" + pulsar_namespace + "/" + register_event_topic,
-            subscription_name,
-            events=events,
-        )
-    )
-    tasks.append(taskRegister)
+    #taskRecord = asyncio.ensure_future(
+    #    topic_subscribe(
+    #        pulsar_tenant + "/" + pulsar_namespace + "/" + record_event_topic,
+    #        subscription_name,
+    #        events=events,
+    #    )
+    #)
+    #othertasks as wished
+    #tasks.append(taskRecord)
     tasks.append(taskUsers)
 
 
