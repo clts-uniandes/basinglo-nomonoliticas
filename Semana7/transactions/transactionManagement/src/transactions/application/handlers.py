@@ -12,8 +12,7 @@ class DomainTransactionHandler(Handler):
             dni_landlord=event.dni_landlord,
             dni_tenant=event.dni_tenant,
             id_property=event.id_property,
-            monetary_value=event.monetary_value,
-            type_lease=event.type_lease,
+            monetary_value=event.monetary_value,            
             contract_initial_date=event.contract_initial_date,
             contract_final_date=event.contract_final_date,            
         )

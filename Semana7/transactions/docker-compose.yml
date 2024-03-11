@@ -2,6 +2,16 @@ version: '3.9'
 
 services:
 
+  broker_pulsar:
+    image: apachepulsar/pulsar:3.2.0
+    networks:
+      - pulsar
+    restart: on-failure
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: ["bin/pulsar", "standalone"]
+
   transactions:
     build: ./transactionManagement
     env_file:
@@ -21,8 +31,18 @@ services:
         condition: service_healthy
     environment:
       - BROKER_HOST=broker_pulsar
-      - TOPIC=topic_transaction
-      - TOPIC_CONSUMER=topic_transaction
+      - TOPIC_TRANS_SAVED=topic_transaction_saved
+      - TOPIC_CONSUMER=topic_transaction_consumer
+      - ENABLE=True
+      - TOPIC_SAGA=topic_transaction_saga
+      - TOPIC_SAGA_RESPONSE=topic_transaction_saga_response
+      - TRANS_COMMAND_TOPIC=publish-transaction-result-topic
+      - TRANS_COMMAND_SUB_NAME=transaction-sub-comandos_2
+      - TRANS_EVENT_TOPIC=topic_transaction_saga
+      - SAGA_COMMAND_SUB_NAME=transaction-sub-comandos-saga
+      - PULSAR_TENANT=public
+      - PULSAR_NAMESPACE=default
+
 
   db_transactions:
     image: postgres:12.4-alpine
@@ -41,17 +61,6 @@ services:
       interval: 2s
       timeout: 5s
       retries: 5
-
-  broker_pulsar:
-    image: apachepulsar/pulsar:3.2.0
-    networks:
-      - pulsar
-    restart: on-failure
-    ports:
-      - "6650:6650"
-      - "8080:8080"
-    command: ["bin/pulsar", "standalone"]
-
 
 networks:
   transaction_net:

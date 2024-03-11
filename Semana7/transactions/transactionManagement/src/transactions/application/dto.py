@@ -8,7 +8,6 @@ class TransactionAppDTO(DTO):
     dni_tenant: str
     id_property: str
     monetary_value: float
-    type_lease: str
     contract_initial_date: date
     contract_final_date: date
     
