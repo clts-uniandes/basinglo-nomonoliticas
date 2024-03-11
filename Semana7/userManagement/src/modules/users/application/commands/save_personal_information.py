@@ -29,9 +29,13 @@ class SavePersonalInfoHandler(SavePersonalInformationBaseHandler):
         personal_information.create_personal_info(personal_information)
 
         repository = self.repo_factory.create_object(PersonalInformationRepository.__class__)
+        
+        # if not full uow mode (caused ancestor called commit previously), better to clean up your batches copy
+        UnitOfWorkPort.clean_old_batches()
 
         UnitOfWorkPort.register_batch(repository.add, personal_information)
-        #UnitOfWorkPort.savepoint()
+        #UnitOfWorkPort.savepoint() only if full uow mode
+        
         UnitOfWorkPort.commit()
 
 

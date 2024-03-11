@@ -16,13 +16,13 @@ def start_message_consumers(app):
     import src.modules.auth.infrastructure.consumers as authentication
     import src.modules.users.infrastructure.consumers as users
 
-    # Events listener (optional); disable to reduce mem comsumption
+    # Events listener (optional); disable to reduce mem comsumption, in principle they don't need session unless needed to fire further actions
     #threading.Thread(target=authentication.event_topic_subscribe).start()
     #threading.Thread(target=users.event_topic_subscribe).start()
     #tutorial 8 args with start?
 
-    # Commands listener
-    threading.Thread(target=authentication.command_event_subscribe).start()
+    # Commands listener, require app context to be called
+    threading.Thread(target=authentication.command_event_subscribe, args=[app]).start()
     #threading.Thread(target=users.command_event_subscribe).start()
     
 
@@ -53,8 +53,8 @@ def config_app():
 
     with flask_app.app_context():
         db.create_all()
-        if not flask_app.config.get('TESTING'):
-            start_message_consumers(flask_app)
+        # start listener threads
+        start_message_consumers(flask_app)
 
     from src.api.auth import auth_bp
     #from src.api.users import users_bp

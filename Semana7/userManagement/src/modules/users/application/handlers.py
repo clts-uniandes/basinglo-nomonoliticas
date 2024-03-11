@@ -21,6 +21,7 @@ class DomainCredentialHandler(Handler):
         )
         exec_command(command)
 
+    #ideally, we would have a different class/file for Integration handlers
     @staticmethod
     def handle_personal_info_created(event):
         print("----GOING TO PULSAR----")

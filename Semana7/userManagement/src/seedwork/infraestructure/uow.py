@@ -49,7 +49,11 @@ class UnitOfWork(ABC):
 
     def commit(self):
         self._publish_events_post_commit()
-        self._clear_batches()
+        print(self._get_events())
+        #dispatched_events = self._get_events()
+        #self._clear_batches()
+        for event in self._get_events():
+            dispatcher.send(signal=f'{type(event).__name__}Domain', event=event)
 
     @abstractmethod
     def rollback(self, savepoint=None):
@@ -63,7 +67,10 @@ class UnitOfWork(ABC):
     def register_batch(self, operation, *args, lock=Lock.PESSIMIST, **kwargs):
         batch = Batch(operation, lock, *args, **kwargs)
         self.batches.append(batch)
-        self._publish_domain_events(batch)
+        #self._publish_domain_events(batch) will publish events before data is real!
+    
+    def clean_old_batches(self):
+        self._clear_batches()
 
     def _publish_domain_events(self, batch):
         for event in self._get_events(batches=[batch]):
@@ -140,8 +147,12 @@ class UnitOfWorkPort:
 
     @staticmethod
     def register_batch(operation, *args, lock=Lock.PESSIMIST, **kwargs):
-        print('init register batch')
         uow = unit_of_work()
         uow.register_batch(operation, *args, lock=lock, **kwargs)
         save_unit_of_work(uow)
-        print('end register batch')
+    
+    @staticmethod
+    def clean_old_batches():
+        uow = unit_of_work()
+        uow.clean_old_batches()
+        save_unit_of_work(uow)
