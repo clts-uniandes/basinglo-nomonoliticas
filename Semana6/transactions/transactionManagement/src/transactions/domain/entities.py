@@ -24,3 +24,15 @@ class Transaction(AgregationRoot):
         self.contract_final_date = transaction.contract_final_date        
 
         self.add_event(TransactionCreated(id_transactionCreated=self.id, created_at=self.created_at))
+
+@dataclass
+class ResponseTransaction(AgregationRoot):
+    id_transaction: str = field(default=None)
+    status: str = field(default=None)
+    created_at: str = field(default=None)
+
+
+    def create_response(self, response: ResponseTransaction):
+        self.id_transaction = response.id_transaction
+        self.status = response.status
+        self.created_at = response.created_at

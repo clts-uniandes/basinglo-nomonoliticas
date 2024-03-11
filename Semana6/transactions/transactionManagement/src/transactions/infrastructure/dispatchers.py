@@ -24,11 +24,19 @@ class Dispatcher:
         payload = CommandCreateTransactionPayload(            
             dni_landlord = str(command.dni_landlord),
             dni_tenant = str(command.dni_tenant),
-            id_property = str(command.id_property),
-            #monetary_value = str(command.monetary_value),
+            id_property = str(command.id_property),            
             monetary_value = float(command.monetary_value),            
             contract_initial_date = str(command.contract_initial_date),
             contract_final_date = (command.contract_final_date)            
         )
         command_integration = CommandCreateTransaction(data=payload)
         self._publicar_mensaje(command_integration, topic, AvroSchema(CommandCreateTransaction))
+
+    def publish_event(self, event, topic):
+        payload = TransactionCreatedPayload(
+            id_transaction = str(event.id_transaction),
+            status = str(event.status),
+            created_at = str(event.created_at )
+        )
+        event_integration = EventTransactionCreated(data=payload)
+        self._publicar_mensaje(event_integration, topic, AvroSchema(EventTransactionCreated))
