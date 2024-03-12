@@ -20,8 +20,7 @@ def add_transaction():
         command = SaveTransaction(dni_landlord=py_dto.dni_landlord,
                                dni_tenant=py_dto.dni_tenant,
                                id_property=py_dto.id_property,
-                               monetary_value=py_dto.monetary_value,
-                               type_lease=py_dto.type_lease,
+                               monetary_value=py_dto.monetary_value,                               
                                contract_initial_date=py_dto.contract_initial_date,
                                contract_final_date=py_dto.contract_final_date)
         exec_command(command)
@@ -41,8 +40,7 @@ def add_transaction_asincronic():
         command = SaveTransactionAsincronic(dni_landlord=py_dto.dni_landlord,
                                dni_tenant=py_dto.dni_tenant,
                                id_property=py_dto.id_property,
-                               monetary_value=py_dto.monetary_value,
-                               type_lease=py_dto.type_lease,
+                               monetary_value=py_dto.monetary_value,                               
                                contract_initial_date=py_dto.contract_initial_date,
                                contract_final_date=py_dto.contract_final_date)
         print("Vamos a llamar al comando ", command)
@@ -64,3 +62,7 @@ def check_pulsar():
     client.close()
     print("Conexion exitosa")
     return { 'msg': 'Pulsar OK'}, HTTPStatus.ACCEPTED
+
+@transactions_bp.route("ping", methods=["GET"])
+def health_check():
+    return "pong", 200

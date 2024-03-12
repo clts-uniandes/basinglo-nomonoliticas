@@ -16,8 +16,7 @@ class SaveTransaction(Command):
     dni_landlord: str
     dni_tenant: str
     id_property: str
-    monetary_value: float
-    type_lease: str
+    monetary_value: float    
     contract_initial_date: date
     contract_final_date: date    
     
@@ -27,8 +26,7 @@ class SaveTransactionHandler(SaveTransactionBaseHandler):
             dni_landlord=command.dni_landlord,
             dni_tenant=command.dni_tenant,
             id_property=command.id_property,
-            monetary_value=command.monetary_value,
-            type_lease=command.type_lease,
+            monetary_value=command.monetary_value,           
             contract_initial_date=command.contract_initial_date,
             contract_final_date=command.contract_final_date           
         )
@@ -42,9 +40,9 @@ class SaveTransactionHandler(SaveTransactionBaseHandler):
         repository = self.repo_factory.create_object(
             TransactionRepository.__class__
         )
-        
+        print("Creando el register batch en UWO")
         UnitOfWorkPort.register_batch(repository.add, transaction)
-        
+        print("haciendo commit  en UWO")
         UnitOfWorkPort.commit()
         
         
@@ -59,8 +57,7 @@ class SaveTransactionAsincronic(Command):
     dni_landlord: str
     dni_tenant: str
     id_property: str
-    monetary_value: float
-    type_lease: str
+    monetary_value: float    
     contract_initial_date: date
     contract_final_date: date    
     
@@ -71,8 +68,7 @@ class SaveTransactionAsincronicHandler(SaveTransactionBaseHandler):
             dni_landlord=command.dni_landlord,
             dni_tenant=command.dni_tenant,
             id_property=command.id_property,
-            monetary_value=command.monetary_value,
-            type_lease=command.type_lease,
+            monetary_value=command.monetary_value,            
             contract_initial_date=command.contract_initial_date,
             contract_final_date=command.contract_final_date           
         )

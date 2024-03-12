@@ -7,6 +7,12 @@ def import_alchemy_models():
 def register_handlers():
     import src.transactions.application
 
+def start_consumer():
+    import threading
+    import src.transactions.infrastructure.consumer as consumer
+    threading.Thread(target=consumer.suscribirse_a_comandos).start()
+    threading.Thread(target=consumer.suscribirse_a_notificacion_saga).start()
+    
 def config_app():
     # init flask app
     flask_app = Flask(__name__)
@@ -30,9 +36,12 @@ def config_app():
     from src.config.db import db
     import_alchemy_models()
     register_handlers()
+    
 
     with flask_app.app_context():
         db.create_all()
+        if not flask_app.config.get('TESTING'):
+            start_consumer()
 
     from src.api.transactions import transactions_bp
     flask_app.register_blueprint(transactions_bp)
