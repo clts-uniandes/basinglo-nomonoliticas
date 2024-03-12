@@ -69,15 +69,15 @@ async def startup():
             events=events,
         )
     )
-    #taskRecord = asyncio.ensure_future(
-    #    topic_subscribe(
-    #        pulsar_tenant + "/" + pulsar_namespace + "/" + record_event_topic,
-    #        subscription_name,
-    #        events=events,
-    #    )
-    #)
+    taskRecord = asyncio.ensure_future(
+        topic_subscribe(
+            pulsar_tenant + "/" + pulsar_namespace + "/" + record_event_topic,
+            subscription_name,
+            events=events,
+        )
+    )
     #othertasks as wished
-    #tasks.append(taskRecord)
+    tasks.append(taskRecord)
     tasks.append(taskUsers)
 
 
