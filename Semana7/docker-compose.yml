@@ -1,0 +1,133 @@
+version: '3.9'
+
+services:
+
+  users:
+    build: ./userManagement
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db_users
+      DB_PORT: 5432
+      DB_NAME: users
+      BROKER_URL: pulsar+ssl://pulsar-gcp-uscentral1.streaming.datastax.com:6651
+      PULSAR_TOKEN: put_token_here
+      BROKER_TENANT: basinglo
+      BROKER_NAMESPACE: default
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "3000:8000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - user_net
+      - pulsar
+    depends_on:
+      db_users:
+        condition: service_healthy
+
+  db_users:
+    image: postgres:12.4-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=users
+    networks:
+      - user_net
+    ports:
+      - 5433:5432
+    volumes:
+      - users_postgres_temp:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  properties:
+    build: ./propertiesManagement
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db_properties
+      DB_PORT: 5432
+      DB_NAME: properties
+      BROKER_PATH: pulsar+ssl://pulsar-gcp-uscentral1.streaming.datastax.com:6651
+      BROKER_TOKEN: put_token_here
+      BROKER_TENANT: basinglo
+      BROKER_NAMESPACE: default
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "3001:8000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - property_net
+    depends_on:
+      db_properties:
+        condition: service_healthy
+
+  db_properties:
+    image: postgres:12.4-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=properties
+    networks:
+      - property_net
+    ports:
+      - 5434:5432
+    volumes:
+      - properties_postgres_temp:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+  
+  notifications:
+    build: ./notifications
+    environment:
+      BROKER_PATH: pulsar+ssl://pulsar-gcp-uscentral1.streaming.datastax.com:6651
+      BROKER_TOKEN: put_token_here
+      BROKER_TENANT: basinglo
+      BROKER_NAMESPACE: default
+      PYTHONUNBUFFERED: 1
+    networks:
+      - pulsar
+    depends_on:
+      pulsar:
+        condition: service_started
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 6
+
+  pulsar:
+    image: apachepulsar/pulsar:3.2.0
+    networks:
+      - pulsar
+    restart: on-failure
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: ["bin/pulsar", "standalone"]
+
+networks:
+  user_net:
+    driver: bridge
+  property_net:
+    driver: bridge
+  pulsar:
+    driver: bridge
+
+volumes:
+  users_postgres_temp:
+  properties_postgres_temp:
