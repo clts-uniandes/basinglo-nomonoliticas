@@ -16,8 +16,8 @@ class ManagerTransaction(CoordinadorOrquestacion):
         self.steps = [
             Inicio(index=0),
             Transaccion(index=1, comando=CommandCreateNotification, evento=EventNotificationCreated, error=EventNotificationFailed, compensacion=CommandReverseNotification),
-            Transaccion(index=2, comando=CommandUpdateProperty, evento=EventPropertyUpdated, error=EventPropertyUpdatedFailed, compensacion=None),
-            Transaccion(index=3, comando=CommandCreateTransaction, evento=EventTransactionCreated, error=EventTransactionFailed, compensacion=CommandRemoveTransaction),
+            Transaccion(index=2, comando=CommandCreateTransaction, evento=EventTransactionCreated, error=EventTransactionFailed, compensacion=CommandRemoveTransaction),
+            Transaccion(index=3, comando=CommandUpdateProperty, evento=EventPropertyUpdated, error=EventPropertyUpdatedFailed, compensacion=None),
             Fin(index=4)
         ]
 
